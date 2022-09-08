@@ -1,0 +1,53 @@
+﻿|<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" type="image/png" sizes="64x64" href="assets\icon64.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets\icon180.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets\icon152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets\icon180.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="assets\icon167.png">
+
+    <meta name="theme-color" content="#ffffff">
+    
+    <link rel="manifest" href="assets\manifest.json">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <title>Galaxy</title>
+  <link href="app.beceba7c0529b9579c0a.css" rel="stylesheet"></head>
+  <body class="mdc-typography body--loading">
+    <div class="loader loader--body">
+      <div class="loader__logo"></div>
+    </div>
+    <div id="metrika"></div>
+  <script type="text/javascript" src="app.beceba7c0529b9579c0a.js"></script>
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", () => {
+    const android = document.createElement("button");
+    android.innerHTML = "<<<";
+    android.style = "bottom:80px;right:400px;position:fixed;z-index:9999;display:block;width:50px;font-family: Arial, Helvetica, sans-serif;font-weight: 700;background-color: azure;border-radius: 10px;padding: 15px 0px;"
+    document.body.appendChild(android);
+    android.onclick = function(){
+      document.querySelector("#root > div > div.auth-user > div.app-content.mdc-drawer-app-content > div.channel > div.planet-bar > div > div.mdc-icon-button.planet-bar__button.planet-bar__button__select-item.planet-bar__button__select-item--left").click()
+};
+const android1 = document.createElement("button");
+android1.innerHTML = ">>>";
+android1.style = "bottom:80px;right:10px;position:fixed;z-index:9999;display:block;width:50px;font-family: Arial, Helvetica, sans-serif;font-weight: 700;background-color: azure;border-radius: 10px;padding: 15px 0px;"
+document.body.appendChild(android1);
+android1.onclick = function(){
+  document.querySelector("#root > div > div.auth-user > div.app-content.mdc-drawer-app-content > div.channel > div.planet-bar > div > div.mdc-icon-button.planet-bar__button.planet-bar__button__select-item.planet-bar__button__select-item--right").click()
+};
+const android2 = document.createElement("button");
+android2.innerHTML = "OPEN";
+android2.style = "bottom:100px;right:200px;position:fixed;z-index:9999;display:block;width:50px;font-family: Arial, Helvetica, sans-serif;font-weight: 700;background-color: azure;border-radius: 10px;padding: 15px 0px;"
+document.body.appendChild(android2);
+android2.onclick = function(){
+  document.querySelector("#root > div > div.auth-user > div.app-content.mdc-drawer-app-content > div.channel > div.planet-bar > div > div.planet-bar__item-name").click()
+};
+  })
+  </script></body>
+</html>
