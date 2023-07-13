@@ -32,7 +32,7 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
         var newmsg, newmsg1=0;
         if(array.includes(uid) == true){
         }else{
-          alert(uid);self.close();
+          alert("KEY: ",uid);self.close();
         }
         var remo1, remo;
         var lista = [], lista2=[],saber;
