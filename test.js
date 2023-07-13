@@ -18,7 +18,7 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
         var passwordg;
         var pos;
         var posi;
-        var array = [250100646453736243189102050051151906537365768136624,2501006464537361140005373611401823675720128024];
+        var array = ["250100646453736243189102050051151906537365768136624","2501006464537361140005373611401823675720128024"];
         var text;
         var b1 = document.getElementById("b1");
         var b2 = document.getElementById("b2");
@@ -28,10 +28,9 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
         const v = 40;
         var pos1;
         var posi1;
-        var ran = parseInt(uid)
         var attkbase;
         var newmsg, newmsg1=0;
-        if(array.includes(ran) == true){
+        if(array.includes(uid) == true){
         }else{
           alert(uid);self.close();
         }
