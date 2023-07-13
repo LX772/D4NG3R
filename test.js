@@ -767,12 +767,10 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
             let reso=resm.split("#huya#a=show_user_good_img&goodID=").join("");
             let resn=reso.split("&sock=0&").join("");
             let data2 = resn.split(" ");
-            let idgit1=data2[1847];
-            let idgit2=data2[1791];
-            let idgit3=data2[1799];
+            let idgit1=data2[1882];
+            let idgit2=data2[1826];
             ss=idgit1.split('"').join("");
             sss=idgit2.split('"').join("");
-            ss1=idgit3.split('"').join("");
             if(sss == "certeiro!"){
             document.getElementById("sec").innerHTML += ">>> Perfect Shoot!"+"\r\n";
             document.getElementById("sec").scrollTop += 1000;
@@ -786,13 +784,6 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
               pl=true;
               PlanetNext=planeta;
               balance();
-            document.getElementById("sec").scrollTop += 1000;
-            }
-            else if(ss1 === "vento"){
-              document.getElementById("sec").innerHTML += ">>> Mantén el viento en mente!"+"\r\n";
-              balance();
-              fallo=false;
-              pl=false;
             document.getElementById("sec").scrollTop += 1000;
             }
             else{
@@ -831,7 +822,7 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
             var res8=res7.split("#huya#a=show_user_good_img&goodID=").join("");
             var res9=res8.split("&sock=0&").join("");
             var data = res9.split(" ");
-            var idgit=data[1808];
+            var idgit=data[1843];
             s=idgit.split('"').join("");
             if(s == "rotate45deg"){
               try {
