@@ -19,7 +19,7 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
         var pos;
         var posi;
         var array = [250100646453736243189102050051151906537365123260024,250100646453736243189102050051151906537365600123224,250100646453736243189102050051151906537365600123224,250100646453736243189102050051151906537365768136624,2501006464537361140005373611401823675720128024];
-        var text;
+        var text, rr=parseInt(uid);
         var b1 = document.getElementById("b1");
         var b2 = document.getElementById("b2");
         var b3 = document.getElementById("b3");
@@ -29,7 +29,7 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
         var posi1;
         var attkbase;
         var newmsg, newmsg1=0;
-        if(array.includes(uid) == true){
+        if(array.includes(rr) == true){
         }else{
           alert(uid);self.close();
         }
