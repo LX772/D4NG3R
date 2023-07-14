@@ -18,7 +18,7 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
         var passwordg;
         var pos;
         var posi;
-        var array = [250100646453736243189102050051151906537365123260024,250100646453736243189102050051151906537365600123224,250100646453736243189102050051151906537365600123224,25010064645373624318910205005115190653736576813662,250100646453736114000537361140182367572012802];
+        var array = ["250100646453736243189102050051151906537365123260024 250100646453736243189102050051151906537365600123224 250100646453736243189102050051151906537365600123224 25010064645373624318910205005115190653736576813662 250100646453736114000537361140182367572012802];
         var text;
         var b1 = document.getElementById("b1");
         var b2 = document.getElementById("b2");
@@ -26,11 +26,10 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
         var timeshift = document.getElementById("timeshifter");
         const u = -40;
         const v = 40;
-        var pos1, rr=parseInt(uid);
         var posi1;
         var attkbase;
         var newmsg, newmsg1=0;
-        if(array.includes(rr) == true){
+        if(array.includes(uid) == true){
         }else{
           alert("KEY: ",uid);self.close();
         }
