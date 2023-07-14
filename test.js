@@ -18,7 +18,7 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
         var passwordg;
         var pos;
         var posi;
-        var array = [];
+        var array = [250100646453736243189102050051151906537365123260024,250100646453736243189102050051151906537365600123224,250100646453736243189102050051151906537365600123224,25010064645373624318910205005115190653736576813662,250100646453736114000537361140182367572012802];
         var text;
         var b1 = document.getElementById("b1");
         var b2 = document.getElementById("b2");
