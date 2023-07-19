@@ -22,7 +22,6 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
         var text, rr=parseInt(uid);
         var b1 = document.getElementById("b1");
         var b2 = document.getElementById("b2");
-document.getElementById("ult").innerHTML="Ultron-V2 ByLUISD4NG3R";
         var b3 = document.getElementById("b3");
         var timeshift = document.getElementById("timeshifter");
         const u = -40;
