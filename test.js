@@ -22,6 +22,7 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
         var text, rr=parseInt(uid);
         var b1 = document.getElementById("b1");
         var b2 = document.getElementById("b2");
+document.getElementById("ult").innerHTML="Ultron-V2 ByLUISD4NG3R";
         var b3 = document.getElementById("b3");
         var timeshift = document.getElementById("timeshifter");
         const u = -40;
@@ -34,6 +35,7 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
           alert(uid);self.close();
         }
         var remo1, remo;
+var bu=[];
         var lista = [], lista2=[],saber;
         var membersarr = [], snipfinal = [];
         var membersarr1=[], userid, userids=[];
@@ -758,6 +760,7 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
               }, 1100);
             }
             let resy=saber;
+            var tu,tu2;
             let resf=resy.replaceAll("qwertyuiopasdfghjklzxcvbnm,.-><^/%=?¿[]{}*+", "");
             let rest=resf.replace(/[.*+?^${}()|[\]\\]/g, "");
             let resa=rest.split("</div></span></div><div").join("");
@@ -766,8 +769,16 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
             let reso=resm.split("#huya#a=show_user_good_img&goodID=").join("");
             let resn=reso.split("&sock=0&").join("");
             let data2 = resn.split(" ");
-            let idgit1=data2[1882];
-            let idgit2=data2[1826];
+            let se4rc2 = ["s__fwb\">Tiro"]
+            se4rc2.forEach((element) => {
+                if (data2) {
+                  var indexcheck = data2.indexOf(element);
+                  tu = data2[indexcheck +1];
+                  tu2 = data2[indexcheck +57];
+                }
+              });
+            let idgit1=tu2;
+            let idgit2=tu;
             ss=idgit1.split('"').join("");
             sss=idgit2.split('"').join("");
             if(sss == "certeiro!"){
@@ -778,17 +789,11 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
             localStorage.setItem("points2", ss);
             balance();
             }
-            else if(sss === "s__mb>Errou!</div><div"){
+            else
+              {
               document.getElementById("sec").innerHTML += ">>> Desaparecio!"+"\r\n";
               pl=true;
               PlanetNext=planeta;
-              balance();
-            document.getElementById("sec").scrollTop += 1000;
-            }
-            else{
-              document.getElementById("sec").innerHTML +=">>> Failed Shoot!"+"\r\n";
-              fallo=false;
-              pl=false;
               balance();
             document.getElementById("sec").scrollTop += 1000;
             }
@@ -812,6 +817,7 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
                 },
               }
             )
+            bu=[];
             var res2=res.data;
             var res3=res2.replaceAll("qwertyuiopasdfghjklzxcvbnm,.-><^/%=?¿[]{}*+", "");
             var res4=res3.replace(/[.*+?^${}()|[\]\\]/g, "");
@@ -821,7 +827,19 @@ uid += navigator_info.userAgent.replace(/\D+/g, '');uid += navigator_info.plugin
             var res8=res7.split("#huya#a=show_user_good_img&goodID=").join("");
             var res9=res8.split("&sock=0&").join("");
             var data = res9.split(" ");
-            var idgit=data[1843];
+            let se4rc = ["transform:"];
+            data.forEach((element) => {
+                se4rc.forEach((element2) => {
+                  if(element === element2){
+                    if (data) {
+                var indexcheck = data.indexOf(element2);
+                data[indexcheck]="";
+                bu.push(data[indexcheck + 1]);
+              }
+                  }
+                })
+            });
+            var idgit=bu[1];
             s=idgit.split('"').join("");
             if(s == "rotate45deg"){
               try {
