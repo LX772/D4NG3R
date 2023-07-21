@@ -776,8 +776,8 @@ var bu=[];
                   tu2 = data2[indexcheck +57];
                   let idgit1=tu2;
                   let idgit2=tu;
-                  ss=idgit1.split('"').join("");
-                  sss=idgit2.split('"').join("");
+                  ss=tu2;
+                  sss=tu.split('"').join("");
                 }
               });
             if(sss == "certeiro!"){
