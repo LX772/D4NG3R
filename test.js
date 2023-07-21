@@ -774,12 +774,12 @@ var bu=[];
                   var indexcheck = data2.indexOf(element);
                   tu = data2[indexcheck +1];
                   tu2 = data2[indexcheck +57];
+                  let idgit1=tu2;
+                  let idgit2=tu;
+                  ss=idgit1.split('"').join("");
+                  sss=idgit2.split('"').join("");
                 }
               });
-            let idgit1=tu2;
-            let idgit2=tu;
-            ss=idgit1.split('"').join("");
-            sss=idgit2.split('"').join("");
             if(sss == "certeiro!"){
             document.getElementById("sec").innerHTML += ">>> Perfect Shoot!"+"\r\n";
             document.getElementById("sec").scrollTop += 1000;
@@ -816,7 +816,6 @@ var bu=[];
                 },
               }
             )
-            bu=[];
             var res2=res.data;
             var res3=res2.replaceAll("qwertyuiopasdfghjklzxcvbnm,.-><^/%=?¿[]{}*+", "");
             var res4=res3.replace(/[.*+?^${}()|[\]\\]/g, "");
@@ -826,19 +825,16 @@ var bu=[];
             var res8=res7.split("#huya#a=show_user_good_img&goodID=").join("");
             var res9=res8.split("&sock=0&").join("");
             var data = res9.split(" ");
+            var data00 = data.reverse();
+            var bu;
             let se4rc = ["transform:"];
-            data.forEach((element) => {
-                se4rc.forEach((element2) => {
-                  if(element === element2){
-                    if (data) {
-                var indexcheck = data.indexOf(element2);
-                data[indexcheck]="";
-                bu.push(data[indexcheck + 1]);
+            se4rc.forEach((element2) => {
+              if (data00) {
+                var indexcheck = data00.indexOf(element2);
+                bu5= data00[indexcheck-1];
               }
-                  }
-                })
             });
-            var idgit=bu[1];
+            var idgit=bu5;
             s=idgit.split('"').join("");
             if(s == "rotate45deg"){
               try {
