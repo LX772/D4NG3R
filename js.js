@@ -216,7 +216,27 @@
                });
                if(userids.filter(Number).length != 0) {
                     //ws.send("test - " + membersarr[memberindex]);
-                    
+                    if(Ran.checked == true){
+                       userid = userids.filter(Number)[Math.floor(Math.random() * userids.length)]+"\r\n";
+                       var seri = userids.filter(Number)[Math.floor(Math.random() * userids.length)];
+                      }
+                    else if(reverse.checked === true){
+                      userid = userids.filter(Number)[userids.length - 1]+"\r\n";
+                      var seri = userids.filter(Number)[userids.length - 1];
+                    }else{
+                      userid = userids.filter(Number)[0]+"\r\n";
+                      var seri = userids.filter(Number)[0];
+                    };
+                    var text1 = new Array(seri);
+            text1.toString();
+            text1.forEach((element) => {
+              if (membersarr1) {
+                var indexcheck = membersarr1.indexOf(element);
+                nombre = membersarr1[indexcheck -1];
+              }
+            });
+            document.getElementById("sec").innerHTML += "(ATQ) Detecting to "+nombre+" in "+timing+"ms"+"\r\n";
+            document.getElementById("sec").scrollTop += 1000;
             if(T === true){
               T = false;
 					  if (secs.checked == true){
@@ -227,7 +247,7 @@
               var atacar = setTimeout(() => {
                 ws.send("ACTION "+notkick+" " + userid + "\r\n");
                 clearTimeout(defender);
-              ws.send("QUIT :ds\r\n");
+                ws.send("QUIT :ds\r\n");
               document.getElementById("sec").scrollTop += 1000;
                       N = 1;
                       //ws = null;
@@ -862,6 +882,7 @@
       input.addEventListener("keydown", function (event) {
         if (event.keyCode === 13) {
           event.preventDefault();
+          document.getElementById("jump").click();
           ws.send(
             "REMOVE " + document.getElementById("position").value + "\r\n"
           );
@@ -920,6 +941,7 @@
         }
         ws.send("ACTION " + review2[Math.floor(Math.random() * review2.length)] + " " + vv + "\r\n");
         document.getElementById('sec2').innerHTML += ("Action send to "+nombre+ "\r\n");
+        loglimit++;
         document.getElementById("sec4").scrollTop += 100;
       });
 	
