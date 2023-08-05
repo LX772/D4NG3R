@@ -242,7 +242,7 @@
                 ws.send("ACTION "+notkick+" " + " " + userid + "\r\n");
                 }, timing);
             }else{
-              var atacar = setTimeout(() => {
+              atacar = setTimeout(() => {
                 ws.send("ACTION "+notkick+" " + userid + "\r\n");
                 clearTimeout(defender);
                 ws.send("QUIT :ds\r\n");
