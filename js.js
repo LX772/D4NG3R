@@ -157,7 +157,7 @@
             document.getElementById("sec").innerHTML += "Planet: "+snippets[1]+ "\r\n";
             document.getElementById("sec").scrollTop += 100;
           }
-			if (green.checked) {
+	if (green.checked) {
             if (snippets[0] === "353") {
               var dump = event.data.split("353").join("");
               var dump2 = dump.split("=").join("");
