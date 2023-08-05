@@ -2,13 +2,11 @@
       var useridg;
       var passwordg;
       var pos;
-      var posi;
-	  var text;
+      var posi;var text;
       var a = document.getElementById("attack");
       var b1 = document.getElementById("b1");
       var b2 = document.getElementById("b2");
-      var b3 = document.getElementById("b3");
-	  var timeshift = document.getElementById("timeshifter");
+      var b3 = document.getElementById("b3");var timeshift = document.getElementById("timeshifter");
       const u = -40;
       const v = 40;
       var pos1;
@@ -239,7 +237,7 @@
             document.getElementById("sec").scrollTop += 1000;
             if(T === true){
               T = false;
-					  if (secs.checked == true){
+		if (secs.checked == true){
               setTimeout(() => {
                 ws.send("ACTION "+notkick+" " + " " + userid + "\r\n");
                 }, timing);
