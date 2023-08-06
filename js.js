@@ -160,8 +160,7 @@ btn.addEventListener("click", () => {
 if (green.checked) {
       if (snippets[0] === "353") {
         var dump = event.data.split("353").join("");
-        var dump2 = dump.split("=").join("");
-        var dump3 = dump2.split("-3").join("");
+        var dump3 = dump.split("-3").join("");
         var dump4 = dump3.split("-2").join("");
         var members = dump4.split("@").join("");
         var members2 = members.split(":").join("");
@@ -211,9 +210,9 @@ if (green.checked) {
         
       });
       var integers = useridarray.filter(Number);
-         userids = integers.filter(function(element){
-           return element.length >= 7;
-         });
+         userids.push(...integers.filter(function(element){
+           return element.length >= 6;
+         }));
          if(userids.filter(Number).length != 0) {
               //ws.send("test - " + membersarr[memberindex]);
               if(Ran.checked == true){
@@ -291,7 +290,6 @@ if (green.checked) {
         snip1 = snipmid.split(" ");
         membersarr1.push(...snip1);
         var ramdon4 = Math.floor(Math.random() * 2);
-        black = document.getElementById("whitelist2").value.split("\n");
         black.forEach((element) => {
         if (membersarr.includes(element.toLowerCase())) {
           var indexcheck = membersarr.indexOf(element.toLowerCase());
@@ -306,9 +304,9 @@ if (green.checked) {
         }
       });
       var integers = useridarray2.filter(Number);
-         userids2 = integers.filter(function(element){
-           return element.length >= 7;
-         });
+         userids2.push(...integers.filter(function(element){
+           return element.length >= 6;
+         }));
         if(userids2.filter(Number).length != 0) {
           userid2 = userids2.filter(Number)[0]+"\r\n";
           var seri2=userids2.filter(Number)[0];
@@ -366,8 +364,7 @@ if (green.checked) {
       if (low.checked) {
       if (snippets[0] === "353") {
         var dump = event.data.split("353").join("");
-        var dump2 = dump.split("=").join("");
-        var dump3 = dump2.split("-3").join("");
+        var dump3 = dump.split("-3").join("");
         var dump4 = dump3.split("-2").join("");
         var members = dump4.split("@").join("");
         var members2 = members.split(":").join("");
@@ -404,6 +401,18 @@ if (green.checked) {
         }
       });
         black = document.getElementById("whitelist2").value.split("\n");
+        var black2 = document.getElementById("whitelist3").value.split("\n");
+        membersarr.forEach((element) => {
+          black2.forEach((element2) => {
+            if(element === element2){
+              if (membersarr.includes(element2.toLowerCase())) {
+          var indexcheck = membersarr.indexOf(element2.toLowerCase());
+          membersarr[indexcheck]="";
+          membersarr[indexcheck + 2] = "-";
+        }
+            }
+          })
+      });
         black.forEach((element) => {
         if (membersarr.includes(element.toLowerCase())) {
           var indexcheck = membersarr.indexOf(element.toLowerCase());
@@ -412,9 +421,9 @@ if (green.checked) {
       });
 
          var integers = membersarr.filter(Number);
-         userids = integers.filter(function(element){
-           return element.length >= 7;
-         });
+         userids.push(...integers.filter(function(element){
+           return element.length >= 6;
+         }));
          if(userids.filter(Number).length != 0) {
               //ws.send("test - " + membersarr[memberindex]);
               if(Ran.checked == true){
@@ -449,7 +458,6 @@ if (green.checked) {
           ws.send("ACTION "+notkick+" " + userid + "\r\n");
           clearTimeout(defender);
         ws.send("QUIT :ds\r\n");
-        console.log(1);
         document.getElementById("sec").scrollTop += 1000;
                 N = 1;
                 //ws = null;
@@ -493,13 +501,19 @@ if (low.checked) {
         snip1 = snipmid.split(" ");
         membersarr1.push(...snip1);
         var ramdon4 = Math.floor(Math.random() * 2);
-        black = document.getElementById("whitelist2").value.split("\n");
         var rey = king+" "+id;
         var divi = rey.split(" ");
+        var black2 = document.getElementById("whitelist3").value.split("\n");
         divi.forEach((element) => {
         if (snipfinal.includes(element)) {
           var indexcheck = snipfinal.indexOf(element);
           snipfinal[indexcheck] = "KING"
+        }
+      });
+      black2.forEach((element) => {
+        if (snipfinal.includes(element.toLowerCase())) {
+          var indexcheck = snipfinal.indexOf(element.toLowerCase());
+          snipfinal[indexcheck + 2] = "-";
         }
       });
         black.forEach((element) => {
@@ -509,9 +523,9 @@ if (low.checked) {
         }
       });
       var integers = snipfinal.filter(Number);
-         userids2 = integers.filter(function(element){
-           return element.length >= 7;
-         });
+         userids2.push(...integers.filter(function(element){
+           return element.length >= 6;
+         }));
         if(userids2.filter(Number).length != 0) {
           userid2 = userids2.filter(Number)[0]+"\r\n";
           var seri2=userids2.filter(Number)[0];
@@ -535,7 +549,6 @@ if (low.checked) {
        defender = setTimeout(() => {
           ws.send("ACTION "+notkick+" " + " " + userid2 + "\r\n");
                 ws.send("QUIT :ds\r\n");
-                console.log(2);
                 document.getElementById("sec").scrollTop += 1000;
                 N = 1;
                 if(Reconn === 1){
@@ -679,7 +692,7 @@ if(timing == undefined || timing == "undefined"){
           }, 100);
       }
     }
-    if (snippets[0] === "PART" && " " + userid2||snippets[0] === "SLEEP" && " " + userid2){
+    if (snippets[0] === "PART" && userids2.includes(snippets[1]) === true||snippets[0] === "SLEEP" && userids2.includes(snippets[1]) === true){
       text = snippets[1];
       var text1 = new Array(snippets[1]);
       text1.forEach((element) => {
@@ -699,7 +712,7 @@ if(timing == undefined || timing == "undefined"){
           // }
         }});
     }
-    if (snippets[0] === "PART" && " " + snippets[1]||snippets[0] === "SLEEP" && " " + snippets[1]){
+    if (snippets[0] === "PART" && userids.includes(snippets[1]) === true||snippets[0] === "SLEEP" && userids.includes(snippets[1] === true)){
       text = snippets[1];
       var text1 = new Array(text);
       text1.forEach((element) => {
@@ -865,7 +878,7 @@ document.getElementById("escape").addEventListener("click", async () => {
           "X-Galaxy-Os-Ver": "1",
           "X-Galaxy-Platform": "web",
           "X-Galaxy-Client-Ver": "9.5",
-          "X-Galaxy-Kbv": "296",
+          "X-Galaxy-Kbv": "352",
           "X-Galaxy-Orientation": "portrait",
           "X-Galaxy-Model": "chrome 99.0.4844.74",
         },
@@ -878,21 +891,14 @@ document.getElementById("escape").addEventListener("click", async () => {
 var input = document.getElementById("position");
 input.addEventListener("keydown", function (event) {
   if (event.keyCode === 13) {
-    event.preventDefault();
-    document.getElementById("jump").click();
     ws.send(
       "REMOVE " + document.getElementById("position").value + "\r\n"
     );
   }
 });
 var input = document.getElementById("message");
-input.addEventListener("keydown", function (event) {
-  if (event.keyCode === 46) {
-        ws.send("T 0 1" + "\r\n");
-      }
-  if(event.keyCode === 32){
-        ws.send("T 0 1" + "\r\n");
-      }
+input.addEventListener("keydown", function (event) {ws.
+  send("T 0 1" + "\r\n");
   if (event.keyCode === 13) {
     event.preventDefault();
     var text1 = new Array(document.getElementById("nickname").value);
