@@ -17,14 +17,14 @@
       var lista = [], lista2=[];
       var userids, userids2, userid2,listadef=[];
       var membersarr = [], snipfinal = [];
-      var membersarr1=[], userid;
-      var useridarray=[],useridarray2=[];
+      var userid;
+      var useridarray=[], membersarr1=[],useridarray2=[];
       var defbase;
       var recodef;
-      var notkick = 3, detener;
+      var notkick = 3, detener, defender;
       var z2, review2
       var nick, king;
-      var atacar, defender;
+      var atacar, vai
       var loglimit = 0;
       var variable, variable1;
       var nombre, nombre2;
@@ -72,17 +72,14 @@
 		}
     const Reconexion = async() =>{
       recodef=setTimeout(() => {
-        atacar = undefined; defender = undefined;
         btn.click();
       }, parseInt(document.getElementById("reconnect").value));
     }
       btn.addEventListener("click", () => {
-        var N = 1, N1 = 1;
+        console.clear();
+        membersarr1=[], N = 1;
         membersarr=[],userid=[],listadef=[],userids=[],userids2=[],userid2=[],useridarray=[],useridarray2=[];
         document.getElementById("sec").innerHTML = "";
-        atacar = undefined; defender = undefined;
-        var Reconn = 1;
-        var T = true;
         document.getElementById("sec").style.color="#00ffff";
         document.getElementById("sec4").innerHTML="";
         attkbase = document.getElementById("attack").value;
@@ -118,7 +115,6 @@
         ws.onmessage = (event) => {
           var text = event.data;
           var snippets = text.split(" ");
-
           if (snippets[0] === "HAAAPSI") {
             haaapsi = snippets[1];
             ws.send("RECOVER " + rc2 + "\r\n");
@@ -158,17 +154,17 @@
           }
 			if (green.checked) {
             if (snippets[0] === "353") {
-              var dump = event.data.split("353").join("");
-              var dump3 = dump.split("-3").join("");
-              var dump4 = dump3.split("-2").join("");
-              var members = dump4.split("@").join("");
-              var members2 = members.split(":").join("");
-              var members1 = members2.split("+").join("");
-              var finmembers = members1.toLowerCase();
-              var ramdon3 = Math.floor(Math.random() * 3);
+              let dump = event.data.split("353").join("");
+              let dump3 = dump.split("-3").join("");
+              let dump4 = dump3.split("-2").join("");
+              let members = dump4.split("@").join("");
+              let members2 = members.split(":").join("");
+              let members1 = members2.split("+").join("");
+              let finmembers = members1.toLowerCase();
+              let ramdon3 = Math.floor(Math.random() * 3);
               membersarr = finmembers.split(" ");
               membersarr1 = members2.split(" ");
-              var timing = parseInt(document.getElementById("attack").value);
+              let timing = parseInt(document.getElementById("attack").value);
               if(moves.checked == true)
               {if (N == 1){
                 if (posi == NaN || posi == "NaN"){
@@ -190,7 +186,7 @@
               black = document.getElementById("whitelist2").value.split("\n");
               black.forEach((element) => {
               if (membersarr.includes(element.toLowerCase())) {
-                var indexcheck = membersarr.indexOf(element.toLowerCase());
+                let indexcheck = membersarr.indexOf(element.toLowerCase());
                 membersarr[indexcheck + 1] = "-";
                 membersarr[indexcheck - 1] = "-";
               }
@@ -206,9 +202,8 @@
               }
                   }
                 })
-              
             });
-            var integers = useridarray.filter(Number);
+            let integers = useridarray.filter(Number);
                userids.push(...integers.filter((element) => element.length > 7));
                if(userids.filter(Number).length != 0) {
                     //ws.send("test - " + membersarr[memberindex]);
@@ -222,93 +217,65 @@
                     };
                     document.getElementById("sec").innerHTML += "Found Enemy in "+timing+"ms"+"\r\n";
                     document.getElementById("sec").scrollTop += 1000;
-					  if (secs.checked == true){
-              setTimeout(() => {
-                ws.send("ACTION "+notkick+" " + " " + userid + "\r\n");
-                }, timing);
-            }else{
-              setTimeout(() => {
-                aprisionar(userid, userids);
-              }, timing);
-            }
-					if (timeshift.checked == true) {
-						setTimeout(() => {
-						if (document.getElementById('sec4').innerHTML.indexOf("850 :Você somente pode colocar na prisão após 3 segundo(s) depois de aparecer no planeta. Também não se pode colocar na prisão mais de uma vez a cada 3 segundo(s). Se você violar uma destas regras, você não poderá colocar na prisão por 15 segundo(s).") !==-1|| document.getElementById('sec').innerHTML.indexOf("850 :You can imprison only in 3s after you appear on Planet. You cant imprison more often than once in 3s. If you violate one of these rules, you wont be able to imprison users during 15s.") !==-1|| document.getElementById('sec').innerHTML.indexOf("850 :Нельзя сажать ранее, чем спустя 3 секунд(ы) после вашего прилёта или прилёта пользователя на планету. Также нельзя сажать чаще, чем раз в 3 секунд(ы). За нарушение одного из этих правил вы не сможете сажать ещё 15 секунд.")!==-1||document.getElementById('sec').innerHTML.indexOf("850 :You will be able to imprison in 15s.")!==-1||document.getElementById('sec').innerHTML.indexOf("850 :Вы сможете сажать не ранее, чем через 15 секунд(ы).")!==-1){
-              incrementAttack();
-            }
-            else if(document.getElementById('sec4').innerHTML.indexOf("850 :Você poderá colocar na prisão dentro de 15 segundo(s).")!==-1){}
-					   else {
-              decrementAttack();
-					    }
-            },timing+500);
-					}
-        }
-                  
-                ;
-              }
-            
+                    defender = setTimeout(() => {
+                      aprisionar(userid, userids.filter(Number).length != 0);
+                    }, timing);
+                    if (timeshift.checked == true)vai = setTimeout(() => {
+                      automatic(incrementAttack, decrementAttack);
+                    }, timing+500);
+                  };
+                }
 			if (green.checked) {
             if (snippets[0] === "JOIN" && snippets[3] != id) {
               snip = event.data;
               snipfinal = snip.toLowerCase().split(" ");
               snip1 = snip.split(" ");
               membersarr1.push(...snip1);
-              var ramdon4 = Math.floor(Math.random() * 2);
+              let ramdon4 = Math.floor(Math.random() * 2);
               black.forEach((element) => {
               if (membersarr.includes(element.toLowerCase())) {
-                var indexcheck = membersarr.indexOf(element.toLowerCase());
+                let indexcheck = membersarr.indexOf(element.toLowerCase());
                 membersarr[indexcheck + 1] = "-";
                 membersarr[indexcheck - 1] = "-";
               }
             });
               whitelist.forEach((element) => {
               if (snipfinal.includes(element.toLowerCase())) {
-                var indexcheck = snipfinal.indexOf(element.toLowerCase());
+                let indexcheck = snipfinal.indexOf(element.toLowerCase());
                 useridarray2.push(snipfinal[indexcheck + 2]);
               }
             });
-            var integers = useridarray2.filter(Number);
-               userids2.push(...integers.filter((element) => element.length > 7));
-              if(userids2.filter(Number).length != 0) {
-                userid2 = userids2.filter(Number)[0]+"\r\n";
+            let integers = useridarray2.filter(Number);
+            let prueba2 = integers.filter((element) => element.length > 7);userids2.push(...prueba2);
+              if(prueba2.filter(Number).length != 0) {
+                userid2 = userids2.filter(Number)[0];
+                let prueba = prueba2.filter(Number)[0];
+                let timing = parseInt(document.getElementById("waiting").value);
                 document.getElementById("sec").innerHTML += "Found Enemy in "+timing+"ms"+"\r\n";
-            document.getElementById("sec").scrollTop += 1000;
-					  if (secs.checked == true){
-                setTimeout(() => {ws.send("ACTION "+notkick+" " + " " + userid2 + "\r\n");
+                document.getElementById("sec").scrollTop += 1000;
+                defender = setTimeout(() => {
+                  new aprisionar(prueba, userids2.filter(Number).includes(prueba) === true);
                 }, timing);
-            }else{
-              setTimeout(() => {
-                aprisionar(userid2, userids2);
-              }, timing);
+              if (timeshift.checked == true)vai = setTimeout(() => {
+                automatic(incrementDefence, decrementDefence);
+              }, timing+500);
+                }
             }
-					if (timeshift.checked == true) {
-            setTimeout(() => {
-              if (document.getElementById('sec4').innerHTML.indexOf("850 :Você somente pode colocar na prisão após 3 segundo(s) depois de aparecer no planeta. Também não se pode colocar na prisão mais de uma vez a cada 3 segundo(s). Se você violar uma destas regras, você não poderá colocar na prisão por 15 segundo(s).") !==-1|| document.getElementById('sec4').innerHTML.indexOf("850 :You can imprison only in 3s after you appear on Planet. You cant imprison more often than once in 3s. If you violate one of these rules, you wont be able to imprison users during 15s.") !==-1|| document.getElementById('sec').innerHTML.indexOf("850 :Нельзя сажать ранее, чем спустя 3 секунд(ы) после вашего прилёта или прилёта пользователя на планету. Также нельзя сажать чаще, чем раз в 3 секунд(ы). За нарушение одного из этих правил вы не сможете сажать ещё 15 секунд.")!==-1||document.getElementById('sec').innerHTML.indexOf("850 :You will be able to imprison in 15s.")!==-1||document.getElementById('sec').innerHTML.indexOf("850 :Вы сможете сажать не ранее, чем через 15 секунд(ы).")!==-1){
-                incrementDefence();
-              }
-              else if(document.getElementById('sec4').innerHTML.indexOf("850 :Você poderá colocar na prisão dentro de 15 segundo(s).")!==-1){}
-              else {
-                decrementDefence();
-              }
-            }, timing+500);
-					}
+          };
         }
-      }
-            };
-            }
-            if (low.checked) {
+          if (low.checked) {
             if (snippets[0] === "353") {
-              var dump = event.data.split("353").join("");
-              var dump3 = dump.split("-3").join("");
-              var dump4 = dump3.split("-2").join("");
-              var members = dump4.split("@").join("");
-              var members2 = members.split(":").join("");
-              var members1 = members2.split("+").join("");
-              var finmembers = members1.toLowerCase();
-              var ramdon3 = Math.floor(Math.random() * 3);
+              let dump = event.data.split("353").join("");
+              let dump3 = dump.split("-3").join("");
+              let dump4 = dump3.split("-2").join("");
+              let members = dump4.split("@").join("");
+              let members2 = members.split(":").join("");
+              let members1 = members2.split("+").join("");
+              let finmembers = members1.toLowerCase();
+              let ramdon3 = Math.floor(Math.random() * 3);
               membersarr = finmembers.split(" ");
               membersarr1 = members2.split(" ");
-              var timing = parseInt(document.getElementById("attack").value);
+              let timing = parseInt(document.getElementById("attack").value);
               if(moves.checked == true)
               {if (N == 1){
                 if (posi == NaN || posi == "NaN"){
@@ -327,21 +294,21 @@
                 }, 720);}
                 N--;}
               };
-              var rey = king+" "+id;
-              var divi = rey.split(" ");
+              let rey = king+" "+id;
+              let divi = rey.split(" ");
               divi.forEach((element) => {
               if (membersarr.includes(element)) {
-                var indexcheck = membersarr.indexOf(element);
+                let indexcheck = membersarr.indexOf(element);
                 membersarr[indexcheck] = "KING";
               }
             });
               black = document.getElementById("whitelist2").value.split("\n");
-              var black2 = document.getElementById("whitelist3").value.split("\n");
+              let black2 = document.getElementById("whitelist3").value.split("\n");
               membersarr.forEach((element) => {
                 black2.forEach((element2) => {
                   if(element === element2){
                     if (membersarr.includes(element2.toLowerCase())) {
-                var indexcheck = membersarr.indexOf(element2.toLowerCase());
+                let indexcheck = membersarr.indexOf(element2.toLowerCase());
                 membersarr[indexcheck]="";
                 membersarr[indexcheck + 2] = "-";
               }
@@ -350,12 +317,12 @@
             });
               black.forEach((element) => {
               if (membersarr.includes(element.toLowerCase())) {
-                var indexcheck = membersarr.indexOf(element.toLowerCase());
+                let indexcheck = membersarr.indexOf(element.toLowerCase());
                 membersarr[indexcheck + 1] = "-";
               }
             });
 
-               var integers = membersarr.filter(Number);
+               let integers = membersarr.filter(Number);
                userids.push(...integers.filter((element) => element.length > 7));
                if(userids.filter(Number).length != 0) {
                     //ws.send("test - " + membersarr[memberindex]);
@@ -368,31 +335,15 @@
                       userid = userids.filter(Number)[0];
                     };
                     document.getElementById("sec").innerHTML += "Found Enemy in "+timing+"ms"+"\r\n";
-            document.getElementById("sec").scrollTop += 1000;
-					  if (secs.checked == true){
-              setTimeout(() => {
-                ws.send("ACTION "+notkick+" " + " " + userid + "\r\n");
-                }, timing);
-            }else{
-              setTimeout(() => {
-                aprisionar(userid, userids);
-              }, timing);
-            }
-					if (timeshift.checked == true) {
-						setTimeout(() => {
-						if (document.getElementById('sec4').innerHTML.indexOf("850 :Você somente pode colocar na prisão após 3 segundo(s) depois de aparecer no planeta. Também não se pode colocar na prisão mais de uma vez a cada 3 segundo(s). Se você violar uma destas regras, você não poderá colocar na prisão por 15 segundo(s).") !==-1|| document.getElementById('sec').innerHTML.indexOf("850 :You can imprison only in 3s after you appear on Planet. You cant imprison more often than once in 3s. If you violate one of these rules, you wont be able to imprison users during 15s.") !==-1|| document.getElementById('sec').innerHTML.indexOf("850 :Нельзя сажать ранее, чем спустя 3 секунд(ы) после вашего прилёта или прилёта пользователя на планету. Также нельзя сажать чаще, чем раз в 3 секунд(ы). За нарушение одного из этих правил вы не сможете сажать ещё 15 секунд.")!==-1||document.getElementById('sec').innerHTML.indexOf("850 :You will be able to imprison in 15s.")!==-1||document.getElementById('sec').innerHTML.indexOf("850 :Вы сможете сажать не ранее, чем через 15 секунд(ы).")!==-1){
-              incrementAttack();
-            }
-            else if(document.getElementById('sec4').innerHTML.indexOf("850 :Você poderá colocar na prisão dentro de 15 segundo(s).")!==-1){}
-					   else {
-              decrementAttack();
-					    }
-            },timing+500);
-					}
-        }
-                  
-                ;
-              }
+                    document.getElementById("sec").scrollTop += 1000;
+                    defender = setTimeout(() => {
+                      aprisionar(userid, userids.filter(Number).length != 0);
+                    }, timing);
+                    if (timeshift.checked == true)vai = setTimeout(() => {
+                      automatic(incrementAttack, decrementAttack);
+                    }, timing+500);
+                  };
+                }
             
 			if (low.checked) {
             if (snippets[0] === "JOIN" && snippets[3] != id) {
@@ -401,10 +352,10 @@
               snip1 = nou.split(" ");
               snipfinal = nou.toLowerCase().split(" ");
               membersarr1.push(...snip1);
-              var ramdon4 = Math.floor(Math.random() * 2);
-              var rey = king+" "+id;
-              var divi = rey.split(" ");
-              var black2 = document.getElementById("whitelist3").value.split("\n");
+              let ramdon4 = Math.floor(Math.random() * 2);
+              let rey = king+" "+id;
+              let divi = rey.split(" ");
+              let black2 = document.getElementById("whitelist3").value.split("\n");
               divi.forEach((element) => {
               if (snipfinal.includes(element)) {
                 let indexcheck = snipfinal.indexOf(element);
@@ -424,33 +375,19 @@
               }
             });
             let integers = snipfinal.filter(Number);
-            userids2.push(...integers.filter((element) => element.length > 7));
-              if(userids2.filter(Number).length != 0) {
+            let prueba2 = integers.filter((element) => element.length > 7);userids2.push(...prueba2);
+              if(prueba2.filter(Number).length != 0) {
                 userid2 = userids2.filter(Number)[0];
-            var timing = parseInt(document.getElementById("waiting").value);
+                let prueba = prueba2.filter(Number)[0];
+            let timing = parseInt(document.getElementById("waiting").value);
             document.getElementById("sec").innerHTML += "Found Enemy in "+timing+"ms"+"\r\n";
             document.getElementById("sec").scrollTop += 1000;
-              var timing = parseInt(document.getElementById("waiting").value);
-					  if (secs.checked == true){
-                setTimeout(() => {
-                ws.send("ACTION "+notkick+" " + " " + userid2 + "\r\n");
-                }, timing);
-            }else{
-              setTimeout(() => {
-                aprisionar(userid2, userids2);
+            defender = setTimeout(() => {
+              new aprisionar(prueba, userids2.filter(Number).includes(prueba) === true);
               }, timing);
-            }
-					if (timeshift.checked == true) {
-						setTimeout(() => {
-              if (document.getElementById('sec4').innerHTML.indexOf("850 :Você somente pode colocar na prisão após 3 segundo(s) depois de aparecer no planeta. Também não se pode colocar na prisão mais de uma vez a cada 3 segundo(s). Se você violar uma destas regras, você não poderá colocar na prisão por 15 segundo(s).") !==-1|| document.getElementById('sec4').innerHTML.indexOf("850 :You can imprison only in 3s after you appear on Planet. You cant imprison more often than once in 3s. If you violate one of these rules, you wont be able to imprison users during 15s.") !==-1|| document.getElementById('sec').innerHTML.indexOf("850 :Нельзя сажать ранее, чем спустя 3 секунд(ы) после вашего прилёта или прилёта пользователя на планету. Также нельзя сажать чаще, чем раз в 3 секунд(ы). За нарушение одного из этих правил вы не сможете сажать ещё 15 секунд.")!==-1||document.getElementById('sec').innerHTML.indexOf("850 :You will be able to imprison in 15s.")!==-1||document.getElementById('sec').innerHTML.indexOf("850 :Вы сможете сажать не ранее, чем через 15 секунд(ы).")!==-1){
-                incrementDefence();
-              }
-              else if(document.getElementById('sec4').innerHTML.indexOf("850 :Você poderá colocar na prisão dentro de 15 segundo(s).")!==-1){}
-              else {
-                decrementDefence();
-              }
-            }, timing+500);
-					}
+              if (timeshift.checked == true)vai = setTimeout(() => {
+                automatic(incrementDefence, decrementDefence);
+              }, timing+500);
         }
       }
             };
@@ -464,16 +401,12 @@
               snippets[1] + " " + "is Blocked"+ "\r\n";
           }
           if (snippets[0] === "452") {
-            var click_event = new CustomEvent("click");
-                        var btn_element = document.querySelector(
-                          "#btn-connect"
-                        );
-                        btn_element.dispatchEvent(click_event);
+            btn.click();
           }
           if(snippets[0] === "FOUNDER"){
-            var idKing = event.data.split("FOUNDER").join("");
-            var id2king = idKing.split("\r\n").join("");
-            var id3king = id2king.split(" ");
+            let idKing = event.data.split("FOUNDER").join("");
+            let id2king = idKing.split("\r\n").join("");
+            let id3king = id2king.split(" ");
             king = id3king.filter(Number);
           }
           if (snippets[0] === "JOIN") {
@@ -496,23 +429,25 @@
           }
           if (snippets[0] === "471") {
             document.getElementById("sec").innerHTML += "Planet is Full"+ "\r\n";
-            ws.send("JOIN " + document.getElementById("planet").value + "\r\n");
+            setTimeout(() => {
+              ws.send("JOIN " + document.getElementById("planet").value + "\r\n");
+            }, 1000);
             document.getElementById("sec").scrollTop += 1000;
           }
           if(snippets[0] === "854"){
-            var view = event.data;
-            var review = view.split(":").join("");
-            var revieww = review.split("854").join("");
-            var revieww3 = revieww.split("10349").join("");
-            var revieww4 = revieww3.split("3").join("");
-            var review1 = revieww4.split(" ");
-            var rev = review1.filter(Number);
+            let view = event.data;
+            let review = view.split(":").join("");
+            let revieww = review.split("854").join("");
+            let revieww3 = revieww.split("10349").join("");
+            let revieww4 = revieww3.split("3").join("");
+            let review1 = revieww4.split(" ");
+            let rev = review1.filter(Number);
             review2 = rev.filter(function(element){
                  return element.length >= 0;
                });
           };
           if(accion.checked){
-          if (snippets[0] === "ACTION" && snippets[1] == userid && snippets[0] === "ACTION" && snippets[1] == userid2){
+          if (snippets[0] === "ACTION" && snippets[1] == userid || snippets[0] === "ACTION" && snippets[1] == userid2){
             if(acciones == 1){
               document.getElementById("sec").innerHTML += "Respondiendo Action"+ "\r\n";
               document.getElementById("sec").scrollTop += 1000;
@@ -562,7 +497,7 @@
             }
             if (document.getElementById('sec2').innerHTML.indexOf("65899314:fly")!=-1){
               document.getElementById('sec2').innerHTML = "";
-              var planet = document.getElementById("plntgo");
+              let planet = document.getElementById("plntgo");
                 setTimeout(() => {
                   planet.click();
                 }, 100);
@@ -584,7 +519,7 @@
           if (snippets[0] === "PART" && snippets[1]||snippets[0] === "SLEEP" && snippets[1]){
             for (let x = 0; x < userids.length; ++x) {
               if(parseInt(snippets[1]) === parseInt(userids[x])){
-                var indexcheck = userids.indexOf(userids[x]);
+                let indexcheck = userids.indexOf(userids[x]);
                 userids[indexcheck] = "";
                if(Ran.checked == true){
                   userid = userids[Math.floor(Math.random() * userids.filter(Number).length)]+"\r\n";
@@ -601,7 +536,7 @@
               }
               }
               for (let x = 0; x < membersarr1.length; ++x) {
-                if(parseInt(text) === parseInt(membersarr1[x])){
+                if(parseInt(snippets[1]) === parseInt(membersarr1[x])){
                 let indexcheck = membersarr1.indexOf(membersarr1[x]);
                 let m = membersarr1[indexcheck -1];
                 document.getElementById('sec').innerHTML += "left Planet "+ m+ "\r\n";
@@ -612,41 +547,24 @@
           }
           if(secs.checked == true){
               if (document.getElementById('sec4').innerHTML.indexOf("850 :Você somente pode colocar na prisão após 3 segundo(s) depois de aparecer no planeta. Também não se pode colocar na prisão mais de uma vez a cada 3 segundo(s). Se você violar uma destas regras, você não poderá colocar na prisão por 15 segundo(s).") !==-1||document.getElementById('sec4').innerHTML.indexOf("850 :Você somente") !==-1|| document.getElementById('sec4').innerHTML.indexOf("850 :You can imprison only in 3s after you appear on Planet. You cant imprison more often than once in 3s. If you violate one of these rules, you wont be able to imprison users during 15s.") !==-1|| document.getElementById('sec4').innerHTML.indexOf("850 :Нельзя сажать ранее, чем спустя 3 секунд(ы) после вашего прилёта или прилёта пользователя на планету. Также нельзя сажать чаще, чем раз в 3 секунд(ы). За нарушение одного из этих правил вы не сможете сажать ещё 15 секунд.")!==-1||document.getElementById('sec4').innerHTML.indexOf("850 :Você poderá colocar na prisão dentro de 15 segundo(s).")!==-1||document.getElementById('sec4').innerHTML.indexOf("850 :You will be able to imprison in 15s.")!==-1||document.getElementById('sec4').innerHTML.indexOf("850 :Вы сможете сажать не ранее, чем через 15 секунд(ы).")!==-1||document.getElementById('sec4').innerHTML.indexOf("850 :A sua autoridade")!==-1||document.getElementById('sec').innerHTML.indexOf("850 :Ваш Авторитет позволяет")!==-1||document.getElementById('sec4').innerHTML.indexOf("850 :Your Authority")!==-1){
-                if (unasola == 1){
-                  ws.send("QUIT :ds\r\n")
-                  unasola = 0;
-                  clearTimeout(detener)
-                document.getElementById('sec').innerHTML += "OFFLINE"+ "\r\n";
-                anterior="";
-                document.getElementById("sec").scrollTop += 100;
-                setTimeout(() => {
-                  var click_event = new CustomEvent("click");
-                  var btn_element = document.querySelector(
-                    "#btn-connect"
-                    );
-                    btn_element.dispatchEvent(click_event);
-                  }, parseInt(document.getElementById("reconnect").value));
-              document.getElementById('sec4').innerHTML = "";
-              unasola = 1;
-              N = 1;
-              N1 = 1;
-            }}
+                OfflineAndConnect();
+              }
           }
           if(autoescape.checked) {
             if(snippets[0] === "900") {
-              var pln = snippets[1];
+              let pln = snippets[1];
               if(pln.slice(0, 6) === "Prison" || pln.slice(0, 6) === "Prisão") {
-                var escape = document.getElementById("escape");
+                let escape = document.getElementById("escape");
                 escape.click();
-                var planet = document.getElementById("plntgo");
+                let planet = document.getElementById("plntgo");
                 setTimeout(() => {
                   planet.click();
                 }, 9500);
               }
             }if(snippets[1] === "PRISON" && snippets[2] === "0") {
-              var escape = document.getElementById("escape");
+              let escape = document.getElementById("escape");
               escape.click();
-              var planet = document.getElementById("plntgo");
+              let planet = document.getElementById("plntgo");
               setTimeout(() => {
                 planet.click();
               }, 9500);
@@ -680,7 +598,7 @@
               }
             }
             if(copykick.checked == true){
-              var copyText = document.getElementById("sec4");
+              let copyText = document.getElementById("sec4");
               navigator.clipboard.writeText(copyText);
             };
           };
@@ -688,8 +606,9 @@
            snippets[0] === "JOIN" && snippets[3] === id
           ) {
             let number = event.data.toString().split("-1").join("");
-            let number1 = number.split(" ").filter(Number);
-            var text = parseInt(number1[number1.length -1]);
+            let number3 = number.split("10101").join("");
+            let number1 = number3.split(" ").filter(Number);
+            let text = parseInt(number1[number1.length -1]);
                 if (1 == 1){
                   var MOVE = Math.floor(Math.random() * document.getElementById("frente").value);
                 } else {
@@ -727,7 +646,7 @@
         });
       document.getElementById("escape").addEventListener("click", async () => {
         try {
-          var res = axios.get(
+          let res = axios.get(
             "https://galaxy.mobstudio.ru/services/?userID="+useridg+"&password="+passwordg+"&a=jail_free&usercur="+useridg+"&by_escapes=1&random=0.6548361149689268",
             {
               headers: {
@@ -758,20 +677,33 @@
           );
         }
       });
-      var aprisionar = function (kick, users) {
-        if(users.filter(Number).length != 0){
-          userNick(kick);
-          ws.send("ACTION 3 " +kick+ "\r\n");
-          ws.send("QUIT :ds\r\n");
-          document.getElementById("sec").innerHTML += "Offline"+ "\r\n";
-          document.getElementById("sec").scrollTop += 1000;
-          Reconexion();
-        }else{
-          document.getElementById("sec").innerHTML += "No Encontre Prison..."+ "\r\n";
-          document.getElementById("sec").scrollTop += 1000;
-        }
+      let aprisionar = function (id, users) {
+        if(users){
+          userNick(id);
+          ws.send("ACTION 3 " +id+ "\r\n");
+          if(secs.checked == false) OfflineAndConnect();
+        }else{}
       }
-      var userNick = function (nicks) {
+      let OfflineAndConnect = function () {
+        ws.send("QUIT :ds\r\n");
+        clearTimeout(defender);
+        document.getElementById("sec").innerHTML += "Offline"+ "\r\n";
+        document.getElementById("sec").scrollTop += 1000;
+        Reconexion();
+      }
+      let automatic = function (subir, bajar) {
+          if (document.getElementById('sec4').innerHTML.indexOf("850 :Você somente pode colocar na prisão após 3 segundo(s) depois de aparecer no planeta. Também não se pode colocar na prisão mais de uma vez a cada 3 segundo(s). Se você violar uma destas regras, você não poderá colocar na prisão por 15 segundo(s).") !==-1|| document.getElementById('sec4').innerHTML.indexOf("850 :You can imprison only in 3s after you appear on Planet. You cant imprison more often than once in 3s. If you violate one of these rules, you wont be able to imprison users during 15s.") !==-1|| document.getElementById('sec').innerHTML.indexOf("850 :Нельзя сажать ранее, чем спустя 3 секунд(ы) после вашего прилёта или прилёта пользователя на планету. Также нельзя сажать чаще, чем раз в 3 секунд(ы). За нарушение одного из этих правил вы не сможете сажать ещё 15 секунд.")!==-1||document.getElementById('sec').innerHTML.indexOf("850 :You will be able to imprison in 15s.")!==-1||document.getElementById('sec').innerHTML.indexOf("850 :Вы сможете сажать не ранее, чем через 15 секунд(ы).")!==-1){
+            subir();
+            document.getElementById('sec4').innerHTML="";
+            if(incrementDefence==subir) clearTimeout(vai);
+          }
+          else {
+            bajar();
+            document.getElementById('sec4').innerHTML="";
+            if(decrementDefence==bajar) clearTimeout(vai);
+          }
+      }
+      let userNick = function (nicks) {
             for (let x = 0; x < membersarr1.length; ++x) {
                 if(parseInt(nicks) === parseInt(membersarr1[x])){
                 let indexcheck = membersarr1.indexOf(membersarr1[x]);
@@ -805,7 +737,6 @@
                   nickfound = "";
                 }
             }
-          ws.send("T 0 1" + "\r\n");
                   ws.send("PRIVMSG 0 " + nombre + " :" + nickfound+document.getElementById("message").value + "\r\n");
                   document.getElementById('sec2').innerHTML += ("Yo: "+nombre2+","+document.getElementById("message").value+"\r\n");
                   document.getElementById("message").value="";
@@ -822,9 +753,9 @@
       });
       document.getElementById("sendactnow1").addEventListener("click", () => {
         let vv;
-        if(userid.length != 0){
+        if(userids.length != 0){
           vv = userid;
-        }else if(userids.length != 0){
+        }else if(userids2.length != 0){
           vv = userid2;
         }
         ws.send("ACTION " + review2[Math.floor(Math.random() * review2.length)] + " " + vv + "\r\n");
