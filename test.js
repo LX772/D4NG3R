@@ -57,11 +57,9 @@
         let ux1 = parseInt(localStorage.getItem("on1"))
         let ux2 =parseInt(localStorage.getItem("on2"));
         let ux3 =parseInt(localStorage.getItem("on3"));
-        let ux4 =parseInt(localStorage.getItem("on4"));
         document.querySelector("#ame").checked=ux1;
         document.querySelector("#tai2").checked=ux2;
         document.querySelector("#expert").checked=ux3;
-        document.querySelector("#expertoff").checked=ux4;
         let dev = localStorage.getItem("dev");
         document.querySelector("#devtype").value=dev;
         var acciones = 1;
