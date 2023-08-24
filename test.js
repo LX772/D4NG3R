@@ -82,7 +82,7 @@
         let reco = localStorage.getItem("Reconexion");
         var mx =parseInt(localStorage.getItem("points"));
         var min =parseInt(localStorage.getItem("points2"));
-        document.getElementById("punto5").innerHTML = "Max:"+mx;document.getElementById("uc").innerHTML = "Return Home";
+        document.getElementById("punto5").innerHTML = "Max:"+mx;
         var codigos;
         var apagar=true, fallo;
         var ws;
