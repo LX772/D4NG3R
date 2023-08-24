@@ -71,7 +71,7 @@
         var b=[];
         var accionRes;
         var rc2,ss1;
-        var pl, PlanetNext, document.getElementById("uc").innerHTML = "Return Home";
+        var pl, PlanetNext;
         var ver;
         var T= true, T2=true;
         var rc;
@@ -82,7 +82,7 @@
         let reco = localStorage.getItem("Reconexion");
         var mx =parseInt(localStorage.getItem("points"));
         var min =parseInt(localStorage.getItem("points2"));
-        document.getElementById("punto5").innerHTML = "Max:"+mx;
+        document.getElementById("punto5").innerHTML = "Max:"+mx;document.getElementById("uc").innerHTML = "Return Home";
         var codigos;
         var apagar=true, fallo;
         var ws;
