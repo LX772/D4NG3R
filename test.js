@@ -22,13 +22,14 @@
         const u = -40;
         const v = 40;
         var pos1;
+        document.getElementById("ult").innerHTML="Ultron-V2 ByLUISD4NG3R"
         var posi1;
         var attkbase;
         var newmsg, newmsg1=0;
         var remo1, remo;
         var lista = [], lista2=[],saber;
         var membersarr = [], snipfinal = [];
-        var membersarr1=[], userid, userids=[];
+        var membersarr1=[], send, userID=[],send1, userID2=[];
         var useridarray=[],useridarray2=[];
         var defbase, seg=0;
         var no=true,i=0;
@@ -46,6 +47,7 @@
         var atacar, defender;
         var Shoot=1;
         var info;
+        var peligro;
         var loglimit = 0;
         var N = 1, N1 = 1, ss,sss,s;
         var variable, variable1;
@@ -56,21 +58,21 @@
         let ux1 = parseInt(localStorage.getItem("on1"))
         let ux2 =parseInt(localStorage.getItem("on2"));
         let ux3 =parseInt(localStorage.getItem("on3"));
-        document.querySelector("#uc").checked=ux;
+        let ux4 =parseInt(localStorage.getItem("on4"));
         document.querySelector("#ame").checked=ux1;
         document.querySelector("#tai2").checked=ux2;
         document.querySelector("#expert").checked=ux3;
+        document.querySelector("#expertoff").checked=ux4;
         let dev = localStorage.getItem("dev");
         document.querySelector("#devtype").value=dev;
         var acciones = 1;
-        var unasola = 1;
+        var unasola = true;
         var nhour;
         var nickfound;
         var b=[];
         var accionRes;
-        var sum1 = localStorage.getItem("uc");
         var rc2,ss1;
-        var pl, PlanetNext;
+        var pl, PlanetNext, document.getElementById("uc").innerHTML = "Return Home";
         var ver;
         var T= true, T2=true;
         var rc;
@@ -99,6 +101,7 @@
         Reconexion();
       }
       btn.addEventListener("click", () => {
+        if(localStorage.getItem("rc") != document.getElementById("rc2").value)localStorage.removeItem("MYADDONS"),localStorage.removeItem("FWLISTVER");
         localStorage.setItem("dev", document.querySelector("#devtype").value)
         localStorage.setItem("rc", document.getElementById("rc2").value)
         localStorage.setItem("plnet", document.getElementById("planet").value)
@@ -113,7 +116,6 @@
         ff;
         salida;
         acciones = 1;
-        unasola = 1;
         nickfound;
         b=[];
         accionRes;
@@ -211,7 +213,6 @@
               );
             }
             if (snippets[0] === "999") {
-              clearTimeout(atacar),clearTimeout(defender);
               if (localStorage.getItem("MYADDONS") !== null) {
               ws.send("FWLISTVER "+ localStorage.getItem("FWLISTVER")+"\r\n");
               ws.send("ADDONS "+ localStorage.getItem("MYADDONS")+"\r\n");
@@ -248,77 +249,26 @@
             }
   
               if (snippets[0] === "353") {
-                userids=[];
-                var dump = event.data.split("353").join("");
-                var dump2 = dump.split("_").join("");
-                var dump3 = dump2.split("-").join("");
-                var dump4 = dump3.split("-2").join("");
-                var members = dump4.split("@").join("");
-                var members2 = members.split(":").join("");
-                var members1 = members2.split("+").join("");
-                var finmembers = members1.toLowerCase();
-                var ramdon3 = Math.floor(Math.random() * 3);
+                let dump = event.data.split("353").join("");
+                let dump2 = dump.split("_").join("");
+                let dump3 = dump2.split("-").join("");
+                let dump4 = dump3.split("-2").join("");
+                let members = dump4.split("@").join("");
+                let members2 = members.split(":").join("");
+                let members1 = members2.split("+").join("");
+                let finmembers = members1.toLowerCase();
+                let ramdon3 = Math.floor(Math.random() * 3);
                 membersarr = finmembers.split(" ");
                 membersarr1 = members1.split(" ");
                 whitelist = ["7900","7899","7898","7897","7896","7895","7894","7893","7891","7892","7891","7881","7882","7883","7884","7885","7886","7887","7888","7889","7890","7891","7892","7893","7894","7895","7896","7897","7898","7899","7767","7766","7768","7769","7770"];
                   whitelist.forEach((element2) => {
                     if (membersarr.includes(element2.toLowerCase())) {
-                  var indexcheck = membersarr.indexOf(element2.toLowerCase());
-                  seg=0;
-                  var userid=membersarr[indexcheck - 2];
-                 // userids.push(ids);
-                  var text1 = new Array(userid);
-              text1.toString();
-              text1.forEach((element) => {
-                if (membersarr1) {
-                  var indexcheck = membersarr1.indexOf(element);
-                  nombre = membersarr1[indexcheck -1];
-                  seg=0;
-                }
-              });
-             // userid = userids.filter(Number)[0]+"\r\n";
-              document.getElementById("sec").innerHTML += ">>> (⚔) "+nombre+"\r\n";
-              document.getElementById("sec").scrollTop += 100;
-              if(expert.checked == false){
-                localStorage.setItem("on3", 0);
-                if(T==true){
-                  T=false;
-                  atacar = setTimeout(() => {
-                    ws.send("ACTION 1996"+" " + userid + "\r\n");
-                    var planet = document.getElementById("plntgo");
-                    atacar = setTimeout(() => {
-                      if(ff==1){ff=2;
-                        PlanetNext=planeta;
-                        planet.click();
-                      }
-                    }, 1100)
-                  }, 1900)
-                }
-          }
-        }
+                      let indexcheck = membersarr.indexOf(element2.toLowerCase());
+                      userID.push(membersarr[indexcheck - 2]);
+                    }
                   });
-                //  var integers = useridarray.filter(Number);
-                //  userids = integers.filter(function(element){
-                //    return element.length >= 7;
-                //  });
-                //  if(userids.length != 0) {
-                      // if(true){
-                      //    userid = userids[Math.floor(Math.random() * userids.length)]+"\r\n";
-                      //    var seri = userids[Math.floor(Math.random() * userids.length)];
-                      //   }
-                      // else if(reverse.checked === true){
-                      //   userid = userids[userids.length - 1]+"\r\n";
-                      //   var seri = userids[userids.length - 1];
-                      // }else{
-                      //   userid = userids[0]+"\r\n";
-                      //   var seri = userids[0];
-                      // };
-                     
-                    
-                  ;
                 }
               if (snippets[0] === "JOIN") {
-                userids=[];
                 snip = event.data;
                 snipmid = snip.split("_").join("");
                 snipfinal = snipmid.toLowerCase().split(" ");
@@ -327,36 +277,8 @@
                 var ramdon4 = Math.floor(Math.random() * 2);
                 whitelist.forEach((element) => {
                 if (snipfinal.includes(element.toLowerCase())) {
-                  var indexcheck = snipfinal.indexOf(element.toLowerCase());
-                  var userid2=snipfinal[indexcheck -3];
-                  //userids.push(ids);
-                  var text1 = new Array(userid2);
-              text1.toString();
-              text1.forEach((element) => {
-                if (membersarr1) {
-                  var indexcheck = membersarr1.indexOf(element);
-                  nombre = membersarr1[indexcheck -1];
-                  seg=0;
-                }
-              });
-              //userid = userids.filter(Number)[0]+"\r\n";
-              document.getElementById("sec").innerHTML += ">>> (🛡) "+nombre+"\r\n";
-              document.getElementById("sec").scrollTop += 100;
-              if(expert.checked == false){
-                if(T==true){
-                  T=false;
-                  defender = setTimeout(() => {
-                    ws.send("ACTION 1996"+" " + userid2 + "\r\n");
-                    var planet = document.getElementById("plntgo");
-                    defender = setTimeout(() => {
-                      if(ff==1){ff=2;
-                        PlanetNext=planeta;
-                        planet.click();
-                      }
-                    }, 1100)
-                  }, 1900)
-                }
-          }
+                  let indexcheck = snipfinal.indexOf(element.toLowerCase());
+                  userID.push(snipfinal[indexcheck -3]);
                 }
               });
               // var integers = useridarray2.filter(Number);
@@ -368,7 +290,18 @@
                 //   var seri2=userids2[0];
                   
         }
-              ;
+              if(expert.checked == false){
+              if(unasola == true){
+                if(userID.filter(Number).length != 0){
+                  unasola = false;
+                  seg=0;
+                  defender = setTimeout(() => {
+                    new shoot(userID.filter(Number)[0], userID);
+                    seg=0;
+                  }, 2200);
+                }
+              }
+            }
               if(snippets[0] === "ACTION" && snippets[1] === "-1"){
                 if(expert.checked == true){
                   localStorage.setItem("on3", 1);
@@ -379,38 +312,6 @@
                 }
               }
               }
-              if(snippets[0] === ":adv"){
-                var sum = snippets[12];
-                sum1 = localStorage.getItem("uc");
-              if(uc.checked==true){
-                if(snippets[2] == id){
-                localStorage.setItem("on", 1);
-                document.getElementById("punto99").style.display="block";
-                if(sum == "alvo"){
-                }else{
-                if(sum1 == null||sum1 == NaN||sum1 == 0||sum1 == "NaN"||sum1 == "null"){
-                  let ka = sum.toString().split("0.").join("");
-                  let v = parseInt(ka);
-                  localStorage.setItem("uc", v)
-                  document.getElementById("punto99").innerHTML = "Balance Diario "+v+"\r\n";
-                }else if(parseInt(sum1)>1){
-                  let ka = sum.toString().split("0.").join("");
-                  let v = parseInt(ka);
-                  sum1 = parseInt(localStorage.getItem("uc"));
-                  let res =eval(sum1+v);
-                  localStorage.setItem("uc", res)
-                  document.getElementById("punto99").innerHTML = "Balance Diario "+res+"\r\n";
-                }
-              }
-            }
-              }else if(uc.checked == false){
-                localStorage.setItem("on", 0);
-                document.getElementById("punto99").style.display="none";
-              }else{
-                sum1=sum;
-                  localStorage.setItem("uc", 0.00)
-              }
-            }
             if (snippets[0] === "451") {
               document.getElementById("sec").innerHTML = "Incorrect Recovery Code"+ "\r\n";
             }
@@ -435,12 +336,8 @@
                   planet.click();
                 }, 500);
             }
-            if (snippets[0] === "471") {
-              document.getElementById("sec").innerHTML += "Planet is Full"+ "\r\n";
-              ws.send("JOIN " + document.getElementById("planet").value + "\r\n");
-              document.getElementById("sec").scrollTop += 1000;
-            }
             if(snippets[0] === "854"){
+              data_clear();
               var view = event.data;
               var review = view.split(":").join("");
               var revieww = review.split("854").join("");
@@ -496,12 +393,6 @@
                   }, 100);
               }
              }
-             const verificador = async() => {
-              if(b.length != 0){
-                pl=true;
-                PlanetNext=planeta;
-              }
-             }
             // if (snippets[0] === "PART" && " " + userid2||snippets[0] === "SLEEP" && " " + userid2){
             //   text = snippets[1];
             //   var text1 = new Array(snippets[1]);
@@ -520,26 +411,25 @@
             //       // }
             //     }});
             // }
-            if (snippets[0] === "PART" && " " + snippets[1]){
-              text = snippets[1];
-              var text1 = new Array(text);
-              text1.toString();
-               //text1.forEach((element) => {
-                 //if (userids.includes(element)) {
-                   //var indexcheck = userids.indexOf(element);
-                   //userids[indexcheck] = "";
-                 //};
-                 //userid =userids.filter(Number)[0]+"\r\n";
-                 //});
-              text1.forEach((element) => {
-                if (membersarr1) {
-                  var indexcheck = membersarr1.indexOf(element.toLowerCase());
-                  nombre = membersarr1[indexcheck -1];
-                }
-              });
-              document.getElementById('sec').innerHTML += ">>> "+nombre+" Se fue"+ "\r\n";
-              document.getElementById("sec").scrollTop += 1000;
+            if (snippets[0] === "PART" && snippets[1]){
+            for (let x = 0; x < userID.length; ++x) {
+              if(parseInt(snippets[1]) === parseInt(userID[x])){
+                let indexcheck = userID.indexOf(userID[x]);
+                userID[indexcheck] = "clear";
+                break;
+              }
+              }
+              for (let x = 0; x < membersarr1.length; ++x) {
+                if(parseInt(snippets[1]) === parseInt(membersarr1[x])){
+                let indexcheck = membersarr1.indexOf(membersarr1[x]);
+                let m = membersarr1[indexcheck -1];
+                membersarr1[indexcheck -1] = "-",membersarr1[indexcheck -2] = "",membersarr1[indexcheck] = "";
+                document.getElementById('sec').innerHTML += ">>> "+m+" Se fue"+"\r\n";
+                document.getElementById("sec").scrollTop += 1000;
+                break;
+              }
             }
+          }
             if(snippets[0] === "452" && snippets[1] === " :Você") {
               document.getElementById("sec").innerHTML += "You can sign in to Galaxy in 10s"+ "\r\n";
                 btn.click();
@@ -609,7 +499,6 @@
               }
               info="";
               remo1="";
-              ff = 2;
               let info2 = snippets[2];
               let info1="&userID="+useridg+"&password="+passwordg+"&usercur="+useridg+"&random";
               info = info2+info1;
@@ -620,6 +509,13 @@
                 DIAMONDS();
               };
               document.getElementById("sec").innerHTML += ">>> Abriendo Panel de Disparo!"+ "\r\n";
+              if(info2.slice(108, 113) === "ach=0"){
+                document.getElementById("sec").innerHTML += ">>> Animal Inofensivo!"+ "\r\n",
+                peligro = false;
+              }else{
+                document.getElementById("sec").innerHTML += ">>> Animal Peligroso!"+ "\r\n",
+                peligro = true;
+              }
                 document.getElementById("sec").scrollTop += 1000;
             }
             if(acciones==2){
@@ -654,7 +550,6 @@
               
               document.getElementById("sec").innerHTML += ">>> No Estas En Safari...\r\n"
               if(no == true){
-                clearTimeout(atacar);clearTimeout(defender);
                 setTimeout(() => {
                 seg=0;
                 if(pl==true){
@@ -678,6 +573,14 @@
             location.reload(true);
           }, 5000);
         }
+         }else{
+          if(salida==true){
+          ws.send("QUIT :ds\r\n");
+          ws.close();
+          setTimeout(() => {
+            btn.click();
+          }, 5000);
+        }
          }
         }
         });
@@ -698,9 +601,30 @@
         document.getElementById("plntgo").addEventListener("click", () => {
           ws.send("JOIN " + document.getElementById("planet").value + "\r\n");
         });
-        if(uc.checked==true){
-        if(nhour == document.getElementById("tim3").value){
-          localStorage.setItem("uc", 0);
+      let data_clear = function (){
+        peligro = null;
+        userID = [];
+        userID2 = [];
+        membersarr1 = [];
+        useridarray= [];
+        useridarray2 = [];
+      };
+      let Reload = function (){
+        setTimeout(() => {
+          unasola = true;
+          document.getElementById("sec").innerHTML += ">>> Pistola Cargada"+"\r\n";
+          document.getElementById("sec").scrollTop += 1000;
+        }, 8000);
+      }
+      let shoot = function (id, users) {
+        if(users.filter(Number).length != 0){
+          clearTimeout(defender);
+          document.getElementById("sec").innerHTML += ">>> Dispare al Animal"+"\r\n";
+          document.getElementById("sec").scrollTop += 1000;
+          ws.send("ACTION 1996 " +id+ "\r\n");
+          Reload();
+        }else{
+          unasola = true;
         }
       }
         document
@@ -766,15 +690,20 @@
             document.getElementById("punto").innerHTML ="Balance Actual "+s+'\r\n';
           }
           const Valid = async() => {
-            if(expert.checked == false){
+            if(uc.checked == true){
               setTimeout(() => {
-                if(ff==2){
-                  clearTimeout(atacar);clearTimeout(defender);
                   document.getElementById("sec").innerHTML += ">>> Volviendo"+"\r\n";
                   var planet = document.getElementById("plntgo");
                   planet.click();
-                }
-              }, 1100);
+              }, 800);
+            }else{
+              if(peligro == true){
+                setTimeout(() => {
+                  document.getElementById("sec").innerHTML += ">>> Volviendo"+"\r\n";
+                  var planet = document.getElementById("plntgo");
+                  planet.click();
+              }, 800);
+              }
             }
             let resy=saber;
             var tu,tu2;
