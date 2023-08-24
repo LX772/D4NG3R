@@ -491,7 +491,7 @@
               mx =parseInt(localStorage.getItem("points"));
             }
             if(snippets[0] === "BROWSER"){
-              if(expert.checked== false){
+              if(uc.checked== true){
                 ver = false;
               }
               info="";
