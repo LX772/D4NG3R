@@ -22,7 +22,6 @@
         const u = -40;
         const v = 40;
         var pos1;
-        document.getElementById("ult").innerHTML="Ultron-V2 ByLUISD4NG3R"
         var posi1;
         var attkbase;
         var newmsg, newmsg1=0;
