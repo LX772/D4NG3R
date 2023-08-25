@@ -62,6 +62,10 @@
         document.querySelector("#expert").checked=ux3;
         let dev = localStorage.getItem("dev");
         document.querySelector("#devtype").value=dev;
+        let time = localStorage.getItem("time");
+        document.querySelector("#time").value=time;
+        let r = localStorage.getItem("reco");
+        document.querySelector("#reconnect").value=r;
         var acciones = 1;
         var unasola = true;
         var nhour;
@@ -102,6 +106,8 @@
         localStorage.setItem("dev", document.querySelector("#devtype").value)
         localStorage.setItem("rc", document.getElementById("rc2").value)
         localStorage.setItem("plnet", document.getElementById("planet").value)
+        localStorage.setItem("time", document.getElementById("time").value)
+        localStorage.setItem("reco", document.getElementById("reconnect").value)
           var planet = document.getElementById("plntgo");
           Shoot=1;
           seg=0;
@@ -210,35 +216,14 @@
               );
             }
             if (snippets[0] === "999") {
-              if (localStorage.getItem("MYADDONS") !== null) {
-              ws.send("FWLISTVER "+ localStorage.getItem("FWLISTVER")+"\r\n");
-              ws.send("ADDONS "+ localStorage.getItem("MYADDONS")+"\r\n");
-              ws.send("MYADDONS "+ localStorage.getItem("MYADDONS")+"\r\n");
-              ws.send("PHONE " + window.screen.width + " " + window.screen.height + " 0 2 :" + getClientDeviceModel()+"\r\n");
-              document.getElementById("sec").innerHTML += ">>> Conexion exitosa..."+"\r\n";
-              document.getElementById("sec").scrollTop += 100;
-              ws.send("JOIN\r\n");
-              salida=true;
-              balance();
-              }else {
-              ws.send("FWLISTVER 0\r\n");
-              ws.send("ADDONS 0\r\n");
-              ws.send("MYADDONS 0 0\r\n");
-              ws.send("PHONE " + window.screen.width + " " + window.screen.height + " 0 2 :" + getClientDeviceModel()+"\r\n");
-              document.getElementById("sec").innerHTML += ">>> Conexion exitosa..."+"\r\n";
-              document.getElementById("sec").scrollTop += 100;
-              ws.send("JOIN\r\n");
-              salida=true;
-              balance();
-            }
-            if(snippets[0] === "883"){
-              localStorage.setItem("FWLISTVER", snippets[1]);
-            }
-            if(snippets[0] === "858"){
-              if(snippets[22].length === 6){
-                localStorage.setItem("MYADDONS", snippets[22]+ " " +snippets[23])
-              }
-            }
+            ws.send("FWLISTVER 281\r\n");
+            ws.send("ADDONS 251251 3\r\n");
+            ws.send("MYADDONS 251251 3\r\n");
+            ws.send("PHONE 1366 768 0 2 :chrome 99.0.4844.74\r\n");
+            document.getElementById("sec").innerHTML += "Conexion exitosa..."+"\r\n";
+            document.getElementById("sec").scrollTop += 100;
+            salida=true;
+            balance();
             }
             if (snippets[0] === "900") {
               document.getElementById("sec").innerHTML += ">>> Planet: "+snippets[1]+ "\r\n";
@@ -491,7 +476,7 @@
               mx =parseInt(localStorage.getItem("points"));
             }
             if(snippets[0] === "BROWSER"){
-              if(uc.checked== true){
+              if(expertoff.checked== true){
                 ver = false;
               }
               info="";
@@ -584,7 +569,7 @@
         setInterval(() => {
             seg++;
             if(ver == true){
-              if(seg >= document.getElementById("time").value){
+              if(userID.filter(Number).length == 0 && ready == true){
                 let otro = other[Math.floor(Math.random() * other.length)]
               if(planeta != otro){
                 seg = 0;
@@ -599,12 +584,16 @@
           ws.send("JOIN " + document.getElementById("planet").value + "\r\n");
         });
       let data_clear = function (){
+        ready = null;
         peligro = null;
         userID = [];
         userID2 = [];
         membersarr1 = [];
         useridarray= [];
         useridarray2 = [];
+        setTimeout(() => {
+          ready = true;
+        }, document.getElementById("time").value);
       };
       let Reload = function (){
         setTimeout(() => {
@@ -639,17 +628,18 @@
                 const res = await axios.get("https://galaxy.mobstudio.ru/services/?userID="+useridg+"&password="+passwordg+"&a=safari_item_buy&buy=3DaysLicense&usercur="+useridg+"&random=0.2209870505108782&ajax=1",
               {
                 headers: {
-                  "X-Galaxy-User-Agent": navigator.userAgent,
-                  "X-Galaxy-Scr-Dpi": window.devicePixelRatio,
-                  "X-Galaxy-Lng": "pt",
-                  "X-Galaxy-Scr-W": window.innerWidth,
-                  "X-Galaxy-Scr-H": window.innerHeight,
-                  "X-Galaxy-Os-Ver": "1",
-                  "X-Galaxy-Platform": "web",
-                  "X-Galaxy-Client-Ver": "9.5",
-                  "X-Galaxy-Kbv": "352",
-                  "X-Galaxy-Orientation": "portrait",
-                  "X-Galaxy-Model": getClientDeviceModel(),
+                  "X-Galaxy-User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36",
+                "X-Galaxy-Scr-Dpi": "1",
+                "X-Galaxy-Lng": "pt",
+                "X-Galaxy-Scr-W": "700",
+                "X-Galaxy-Scr-H": "657",
+                "X-Galaxy-Os-Ver": "1",
+                "X-Galaxy-Platform": "web",
+                "X-Galaxy-Client-Ver": "9.5",
+                "X-Galaxy-Kbv": "352",
+                "X-Galaxy-Orientation": "portrait",
+                "X-Galaxy-Model": "chrome 99.0.4844.74",
                 },
               }
             )
@@ -666,17 +656,18 @@
                 const res = await axios.get("https://galaxy.mobstudio.ru/services/?a=pay_get_balance&userID="+useridg+"&password="+passwordg+"&usercur="+useridg+"&random=0.2209870505108782&ajax=1",
               {
                 headers: {
-                  "X-Galaxy-User-Agent": navigator.userAgent,
-                  "X-Galaxy-Scr-Dpi": window.devicePixelRatio,
-                  "X-Galaxy-Lng": "pt",
-                  "X-Galaxy-Scr-W": window.innerWidth,
-                  "X-Galaxy-Scr-H": window.innerHeight,
-                  "X-Galaxy-Os-Ver": "1",
-                  "X-Galaxy-Platform": "web",
-                  "X-Galaxy-Client-Ver": "9.5",
-                  "X-Galaxy-Kbv": "352",
-                  "X-Galaxy-Orientation": "portrait",
-                  "X-Galaxy-Model": getClientDeviceModel(),
+                  "X-Galaxy-User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36",
+                "X-Galaxy-Scr-Dpi": "1",
+                "X-Galaxy-Lng": "pt",
+                "X-Galaxy-Scr-W": "700",
+                "X-Galaxy-Scr-H": "657",
+                "X-Galaxy-Os-Ver": "1",
+                "X-Galaxy-Platform": "web",
+                "X-Galaxy-Client-Ver": "9.5",
+                "X-Galaxy-Kbv": "352",
+                "X-Galaxy-Orientation": "portrait",
+                "X-Galaxy-Model": "chrome 99.0.4844.74",
                 },
               }
             )
@@ -688,12 +679,14 @@
           }
           const Valid = async() => {
             if(uc.checked == true){
+              localStorage.setItem("on4", 1);
               setTimeout(() => {
                   document.getElementById("sec").innerHTML += ">>> Volviendo"+"\r\n";
                   var planet = document.getElementById("plntgo");
                   planet.click();
               }, 800);
             }else{
+              localStorage.setItem("on4", 0);
               if(peligro == true){
                 setTimeout(() => {
                   document.getElementById("sec").innerHTML += ">>> Volviendo"+"\r\n";
@@ -745,17 +738,18 @@
                 const res = await axios.get(info,
               {
                 headers: {
-                  "X-Galaxy-User-Agent": navigator.userAgent,
-                  "X-Galaxy-Scr-Dpi": window.devicePixelRatio,
-                  "X-Galaxy-Lng": "pt",
-                  "X-Galaxy-Scr-W": window.innerWidth,
-                  "X-Galaxy-Scr-H": window.innerHeight,
-                  "X-Galaxy-Os-Ver": "1",
-                  "X-Galaxy-Platform": "web",
-                  "X-Galaxy-Client-Ver": "9.5",
-                  "X-Galaxy-Kbv": "352",
-                  "X-Galaxy-Orientation": "portrait",
-                  "X-Galaxy-Model": getClientDeviceModel(),
+                  "X-Galaxy-User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36",
+                "X-Galaxy-Scr-Dpi": "1",
+                "X-Galaxy-Lng": "pt",
+                "X-Galaxy-Scr-W": "700",
+                "X-Galaxy-Scr-H": "657",
+                "X-Galaxy-Os-Ver": "1",
+                "X-Galaxy-Platform": "web",
+                "X-Galaxy-Client-Ver": "9.5",
+                "X-Galaxy-Kbv": "352",
+                "X-Galaxy-Orientation": "portrait",
+                "X-Galaxy-Model": "chrome 99.0.4844.74",
                 },
               }
             )
@@ -785,17 +779,18 @@
               "https://galaxy.mobstudio.ru/services/?userID="+useridg+"&password="+passwordg+"&"+remo1+"shot=7&usercur="+useridg+"&random",
               {
                 headers: {
-                  "X-Galaxy-User-Agent": navigator.userAgent,
-                  "X-Galaxy-Scr-Dpi": window.devicePixelRatio,
-                  "X-Galaxy-Lng": "pt",
-                  "X-Galaxy-Scr-W": window.innerWidth,
-                  "X-Galaxy-Scr-H": window.innerHeight,
-                  "X-Galaxy-Os-Ver": "1",
-                  "X-Galaxy-Platform": "web",
-                  "X-Galaxy-Client-Ver": "9.5",
-                  "X-Galaxy-Kbv": "352",
-                  "X-Galaxy-Orientation": "portrait",
-                  "X-Galaxy-Model": getClientDeviceModel(),
+                  "X-Galaxy-User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36",
+                "X-Galaxy-Scr-Dpi": "1",
+                "X-Galaxy-Lng": "pt",
+                "X-Galaxy-Scr-W": "700",
+                "X-Galaxy-Scr-H": "657",
+                "X-Galaxy-Os-Ver": "1",
+                "X-Galaxy-Platform": "web",
+                "X-Galaxy-Client-Ver": "9.5",
+                "X-Galaxy-Kbv": "352",
+                "X-Galaxy-Orientation": "portrait",
+                "X-Galaxy-Model": "chrome 99.0.4844.74",
                 },
               }
             )
@@ -814,17 +809,18 @@
               "https://galaxy.mobstudio.ru/services/?userID="+useridg+"&password="+passwordg+"&"+remo1+"shot=1&usercur="+useridg+"&random",
               {
                 headers: {
-                  "X-Galaxy-User-Agent": navigator.userAgent,
-                  "X-Galaxy-Scr-Dpi": window.devicePixelRatio,
-                  "X-Galaxy-Lng": "pt",
-                  "X-Galaxy-Scr-W": window.innerWidth,
-                  "X-Galaxy-Scr-H": window.innerHeight,
-                  "X-Galaxy-Os-Ver": "1",
-                  "X-Galaxy-Platform": "web",
-                  "X-Galaxy-Client-Ver": "9.5",
-                  "X-Galaxy-Kbv": "352",
-                  "X-Galaxy-Orientation": "portrait",
-                  "X-Galaxy-Model": getClientDeviceModel(),
+                  "X-Galaxy-User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36",
+                "X-Galaxy-Scr-Dpi": "1",
+                "X-Galaxy-Lng": "pt",
+                "X-Galaxy-Scr-W": "700",
+                "X-Galaxy-Scr-H": "657",
+                "X-Galaxy-Os-Ver": "1",
+                "X-Galaxy-Platform": "web",
+                "X-Galaxy-Client-Ver": "9.5",
+                "X-Galaxy-Kbv": "352",
+                "X-Galaxy-Orientation": "portrait",
+                "X-Galaxy-Model": "chrome 99.0.4844.74",
                 },
               }
             )
@@ -843,17 +839,18 @@
               "https://galaxy.mobstudio.ru/services/?userID="+useridg+"&password="+passwordg+"&"+remo1+"shot=4&usercur="+useridg+"&random",
               {
                 headers: {
-                  "X-Galaxy-User-Agent": navigator.userAgent,
-                  "X-Galaxy-Scr-Dpi": window.devicePixelRatio,
-                  "X-Galaxy-Lng": "pt",
-                  "X-Galaxy-Scr-W": window.innerWidth,
-                  "X-Galaxy-Scr-H": window.innerHeight,
-                  "X-Galaxy-Os-Ver": "1",
-                  "X-Galaxy-Platform": "web",
-                  "X-Galaxy-Client-Ver": "9.5",
-                  "X-Galaxy-Kbv": "352",
-                  "X-Galaxy-Orientation": "portrait",
-                  "X-Galaxy-Model": getClientDeviceModel(),
+                  "X-Galaxy-User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36",
+                "X-Galaxy-Scr-Dpi": "1",
+                "X-Galaxy-Lng": "pt",
+                "X-Galaxy-Scr-W": "700",
+                "X-Galaxy-Scr-H": "657",
+                "X-Galaxy-Os-Ver": "1",
+                "X-Galaxy-Platform": "web",
+                "X-Galaxy-Client-Ver": "9.5",
+                "X-Galaxy-Kbv": "352",
+                "X-Galaxy-Orientation": "portrait",
+                "X-Galaxy-Model": "chrome 99.0.4844.74",
                 },
               }
             )
@@ -872,17 +869,18 @@
               "https://galaxy.mobstudio.ru/services/?userID="+useridg+"&password="+passwordg+"&"+remo1+"shot=8&usercur="+useridg+"&random",
               {
                 headers: {
-                  "X-Galaxy-User-Agent": navigator.userAgent,
-                  "X-Galaxy-Scr-Dpi": window.devicePixelRatio,
-                  "X-Galaxy-Lng": "pt",
-                  "X-Galaxy-Scr-W": window.innerWidth,
-                  "X-Galaxy-Scr-H": window.innerHeight,
-                  "X-Galaxy-Os-Ver": "1",
-                  "X-Galaxy-Platform": "web",
-                  "X-Galaxy-Client-Ver": "9.5",
-                  "X-Galaxy-Kbv": "352",
-                  "X-Galaxy-Orientation": "portrait",
-                  "X-Galaxy-Model": getClientDeviceModel(),
+                  "X-Galaxy-User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36",
+                "X-Galaxy-Scr-Dpi": "1",
+                "X-Galaxy-Lng": "pt",
+                "X-Galaxy-Scr-W": "700",
+                "X-Galaxy-Scr-H": "657",
+                "X-Galaxy-Os-Ver": "1",
+                "X-Galaxy-Platform": "web",
+                "X-Galaxy-Client-Ver": "9.5",
+                "X-Galaxy-Kbv": "352",
+                "X-Galaxy-Orientation": "portrait",
+                "X-Galaxy-Model": "chrome 99.0.4844.74",
                 },
               }
             )
@@ -901,17 +899,18 @@
               "https://galaxy.mobstudio.ru/services/?userID="+useridg+"&password="+passwordg+"&"+remo1+"shot=9&usercur=72514374&random",
               {
                 headers: {
-                  "X-Galaxy-User-Agent": navigator.userAgent,
-                  "X-Galaxy-Scr-Dpi": window.devicePixelRatio,
-                  "X-Galaxy-Lng": "pt",
-                  "X-Galaxy-Scr-W": window.innerWidth,
-                  "X-Galaxy-Scr-H": window.innerHeight,
-                  "X-Galaxy-Os-Ver": "1",
-                  "X-Galaxy-Platform": "web",
-                  "X-Galaxy-Client-Ver": "9.5",
-                  "X-Galaxy-Kbv": "352",
-                  "X-Galaxy-Orientation": "portrait",
-                  "X-Galaxy-Model": getClientDeviceModel(),
+                  "X-Galaxy-User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36",
+                "X-Galaxy-Scr-Dpi": "1",
+                "X-Galaxy-Lng": "pt",
+                "X-Galaxy-Scr-W": "700",
+                "X-Galaxy-Scr-H": "657",
+                "X-Galaxy-Os-Ver": "1",
+                "X-Galaxy-Platform": "web",
+                "X-Galaxy-Client-Ver": "9.5",
+                "X-Galaxy-Kbv": "352",
+                "X-Galaxy-Orientation": "portrait",
+                "X-Galaxy-Model": "chrome 99.0.4844.74",
                 },
               }
             )
@@ -930,17 +929,18 @@
               "https://galaxy.mobstudio.ru/services/?userID="+useridg+"&password="+passwordg+"&"+remo1+"shot=3&usercur=72514374&random",
               {
                 headers: {
-                  "X-Galaxy-User-Agent": navigator.userAgent,
-                  "X-Galaxy-Scr-Dpi": window.devicePixelRatio,
-                  "X-Galaxy-Lng": "pt",
-                  "X-Galaxy-Scr-W": window.innerWidth,
-                  "X-Galaxy-Scr-H": window.innerHeight,
-                  "X-Galaxy-Os-Ver": "1",
-                  "X-Galaxy-Platform": "web",
-                  "X-Galaxy-Client-Ver": "9.5",
-                  "X-Galaxy-Kbv": "352",
-                  "X-Galaxy-Orientation": "portrait",
-                  "X-Galaxy-Model": getClientDeviceModel(),
+                  "X-Galaxy-User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36",
+                "X-Galaxy-Scr-Dpi": "1",
+                "X-Galaxy-Lng": "pt",
+                "X-Galaxy-Scr-W": "700",
+                "X-Galaxy-Scr-H": "657",
+                "X-Galaxy-Os-Ver": "1",
+                "X-Galaxy-Platform": "web",
+                "X-Galaxy-Client-Ver": "9.5",
+                "X-Galaxy-Kbv": "352",
+                "X-Galaxy-Orientation": "portrait",
+                "X-Galaxy-Model": "chrome 99.0.4844.74",
                 },
               }
             )
@@ -959,17 +959,18 @@
               "https://galaxy.mobstudio.ru/services/?userID="+useridg+"&password="+passwordg+"&"+remo1+"shot=1&usercur="+useridg+"&random",
               {
                 headers: {
-                  "X-Galaxy-User-Agent": navigator.userAgent,
-                  "X-Galaxy-Scr-Dpi": window.devicePixelRatio,
-                  "X-Galaxy-Lng": "pt",
-                  "X-Galaxy-Scr-W": window.innerWidth,
-                  "X-Galaxy-Scr-H": window.innerHeight,
-                  "X-Galaxy-Os-Ver": "1",
-                  "X-Galaxy-Platform": "web",
-                  "X-Galaxy-Client-Ver": "9.5",
-                  "X-Galaxy-Kbv": "352",
-                  "X-Galaxy-Orientation": "portrait",
-                  "X-Galaxy-Model": getClientDeviceModel(),
+                  "X-Galaxy-User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36",
+                "X-Galaxy-Scr-Dpi": "1",
+                "X-Galaxy-Lng": "pt",
+                "X-Galaxy-Scr-W": "700",
+                "X-Galaxy-Scr-H": "657",
+                "X-Galaxy-Os-Ver": "1",
+                "X-Galaxy-Platform": "web",
+                "X-Galaxy-Client-Ver": "9.5",
+                "X-Galaxy-Kbv": "352",
+                "X-Galaxy-Orientation": "portrait",
+                "X-Galaxy-Model": "chrome 99.0.4844.74",
                 },
               }
             )
@@ -988,17 +989,18 @@
               "https://galaxy.mobstudio.ru/services/?userID="+useridg+"&password="+passwordg+"&"+remo1+"shot=2&usercur="+useridg+"&random",
               {
                 headers: {
-                  "X-Galaxy-User-Agent": navigator.userAgent,
-                  "X-Galaxy-Scr-Dpi": window.devicePixelRatio,
-                  "X-Galaxy-Lng": "pt",
-                  "X-Galaxy-Scr-W": window.innerWidth,
-                  "X-Galaxy-Scr-H": window.innerHeight,
-                  "X-Galaxy-Os-Ver": "1",
-                  "X-Galaxy-Platform": "web",
-                  "X-Galaxy-Client-Ver": "9.5",
-                  "X-Galaxy-Kbv": "352",
-                  "X-Galaxy-Orientation": "portrait",
-                  "X-Galaxy-Model": getClientDeviceModel(),
+                  "X-Galaxy-User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36",
+                "X-Galaxy-Scr-Dpi": "1",
+                "X-Galaxy-Lng": "pt",
+                "X-Galaxy-Scr-W": "700",
+                "X-Galaxy-Scr-H": "657",
+                "X-Galaxy-Os-Ver": "1",
+                "X-Galaxy-Platform": "web",
+                "X-Galaxy-Client-Ver": "9.5",
+                "X-Galaxy-Kbv": "352",
+                "X-Galaxy-Orientation": "portrait",
+                "X-Galaxy-Model": "chrome 99.0.4844.74",
                 },
               }
             )
@@ -1017,17 +1019,18 @@
               "https://galaxy.mobstudio.ru/services/?userID="+useridg+"&password="+passwordg+"&"+remo1+"shot=6&usercur="+useridg+"&random",
               {
                 headers: {
-                  "X-Galaxy-User-Agent": navigator.userAgent,
-                  "X-Galaxy-Scr-Dpi": window.devicePixelRatio,
-                  "X-Galaxy-Lng": "pt",
-                  "X-Galaxy-Scr-W": window.innerWidth,
-                  "X-Galaxy-Scr-H": window.innerHeight,
-                  "X-Galaxy-Os-Ver": "1",
-                  "X-Galaxy-Platform": "web",
-                  "X-Galaxy-Client-Ver": "9.5",
-                  "X-Galaxy-Kbv": "352",
-                  "X-Galaxy-Orientation": "portrait",
-                  "X-Galaxy-Model": getClientDeviceModel(),
+                  "X-Galaxy-User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36",
+                "X-Galaxy-Scr-Dpi": "1",
+                "X-Galaxy-Lng": "pt",
+                "X-Galaxy-Scr-W": "700",
+                "X-Galaxy-Scr-H": "657",
+                "X-Galaxy-Os-Ver": "1",
+                "X-Galaxy-Platform": "web",
+                "X-Galaxy-Client-Ver": "9.5",
+                "X-Galaxy-Kbv": "352",
+                "X-Galaxy-Orientation": "portrait",
+                "X-Galaxy-Model": "chrome 99.0.4844.74",
                 },
               }
             )
@@ -1046,17 +1049,18 @@
               "https://galaxy.mobstudio.ru/services/?userID="+useridg+"&password="+passwordg+"&"+remo1+"shot=7&usercur="+useridg+"&random",
               {
                 headers: {
-                  "X-Galaxy-User-Agent": navigator.userAgent,
-                  "X-Galaxy-Scr-Dpi": window.devicePixelRatio,
-                  "X-Galaxy-Lng": "pt",
-                  "X-Galaxy-Scr-W": window.innerWidth,
-                  "X-Galaxy-Scr-H": window.innerHeight,
-                  "X-Galaxy-Os-Ver": "1",
-                  "X-Galaxy-Platform": "web",
-                  "X-Galaxy-Client-Ver": "9.5",
-                  "X-Galaxy-Kbv": "352",
-                  "X-Galaxy-Orientation": "portrait",
-                  "X-Galaxy-Model": getClientDeviceModel(),
+                  "X-Galaxy-User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36",
+                "X-Galaxy-Scr-Dpi": "1",
+                "X-Galaxy-Lng": "pt",
+                "X-Galaxy-Scr-W": "700",
+                "X-Galaxy-Scr-H": "657",
+                "X-Galaxy-Os-Ver": "1",
+                "X-Galaxy-Platform": "web",
+                "X-Galaxy-Client-Ver": "9.5",
+                "X-Galaxy-Kbv": "352",
+                "X-Galaxy-Orientation": "portrait",
+                "X-Galaxy-Model": "chrome 99.0.4844.74",
                 },
               }
             )
