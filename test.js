@@ -219,7 +219,7 @@
             ws.send("FWLISTVER 281\r\n");
             ws.send("ADDONS 251251 3\r\n");
             ws.send("MYADDONS 251251 3\r\n");
-            ws.send("PHONE 1366 768 0 2 :chrome 99.0.4844.74\r\n");
+            ws.send("PHONE 1366 768 0 2 :chrome 99.0.4844.74\r\n");ws.send("JOIN\r\n");
             document.getElementById("sec").innerHTML += "Conexion exitosa..."+"\r\n";
             document.getElementById("sec").scrollTop += 100;
             salida=true;
