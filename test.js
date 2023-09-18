@@ -1,4 +1,4 @@
-var id;
+        var id;
         var btn = document.getElementById("btn-connect");
         var useridg;
         var passwordg;
@@ -12,7 +12,6 @@ var id;
         const u = -40;
         const v = 40;
         var pos1;
-        document.getElementById("ult").innerHTML="Ultron-V2 ByLUISD4NG3R"
         var posi1;
         var attkbase;
         var newmsg, newmsg1=0;
@@ -207,28 +206,16 @@ var id;
               );
             }
             if (snippets[0] === "999") {
-              if (localStorage.getItem("MYADDONS") !== null) {
-              ws.send("FWLISTVER "+ localStorage.getItem("FWLISTVER")+"\r\n");
-              ws.send("ADDONS "+ localStorage.getItem("MYADDONS")+"\r\n");
-              ws.send("MYADDONS "+ localStorage.getItem("MYADDONS")+"\r\n");
-              ws.send("PHONE " + window.screen.width + " " + window.screen.height + " 0 2 :" + getClientDeviceModel()+"\r\n");
-              document.getElementById("sec").innerHTML += ">>> Conexion exitosa..."+"\r\n";
+            ws.send("FWLISTVER 281\r\n");
+            ws.send("ADDONS 251251 3\r\n");
+            ws.send("MYADDONS 251251 3\r\n");
+            ws.send("PHONE 1366 768 0 2 :chrome 99.0.4844.74\r\n");
+            document.getElementById("sec").innerHTML += "Conexion exitosa..."+"\r\n";
+            document.getElementById("sec").scrollTop += 100;
+            ws.send("JOIN\r\n");
+                    document.getElementById("sec").innerHTML += ">>> Conexion exitosa..."+"\r\n";
               document.getElementById("sec").scrollTop += 100;
-              ws.send("JOIN\r\n");
-              salida=true;
-              balance();
-              }else {
-              ws.send("FWLISTVER 0\r\n");
-              ws.send("ADDONS 0\r\n");
-              ws.send("MYADDONS 0 0\r\n");
-              ws.send("PHONE " + window.screen.width + " " + window.screen.height + " 0 2 :" + getClientDeviceModel()+"\r\n");
-              document.getElementById("sec").innerHTML += ">>> Conexion exitosa..."+"\r\n";
-              document.getElementById("sec").scrollTop += 100;
-              ws.send("JOIN\r\n");
-              salida=true;
-              balance();
-            }
-            }
+          }
             if(snippets[0] === "883"){
               localStorage.setItem("FWLISTVER", snippets[1]);
             }
