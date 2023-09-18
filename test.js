@@ -318,7 +318,7 @@
                   planet.click();
                 }, 500);
             }
-            if(snippets[0] === "854"){
+            if(snippets[0] === "852"){
               data_clear();
               var view = event.data;
               var review = view.split(":").join("");
