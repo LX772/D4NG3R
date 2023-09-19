@@ -12,6 +12,7 @@
         const u = -40;
         const v = 40;
         var pos1;
+        document.getElementById("ult").innerHTML="Ultron-V2 ByLUISD4NG3R"
         var posi1;
         var attkbase;
         var newmsg, newmsg1=0;
@@ -206,16 +207,28 @@
               );
             }
             if (snippets[0] === "999") {
-            ws.send("FWLISTVER 281\r\n");
-            ws.send("ADDONS 251251 3\r\n");
-            ws.send("MYADDONS 251251 3\r\n");
-            ws.send("PHONE 1366 768 0 2 :chrome 99.0.4844.74\r\n");
-            document.getElementById("sec").innerHTML += "Conexion exitosa..."+"\r\n";
-            document.getElementById("sec").scrollTop += 100;
-            ws.send("JOIN\r\n");
-                    document.getElementById("sec").innerHTML += ">>> Conexion exitosa..."+"\r\n";
+              if (localStorage.getItem("MYADDONS") !== null) {
+              ws.send("FWLISTVER "+ localStorage.getItem("FWLISTVER")+"\r\n");
+              ws.send("ADDONS "+ localStorage.getItem("MYADDONS")+"\r\n");
+              ws.send("MYADDONS "+ localStorage.getItem("MYADDONS")+"\r\n");
+              ws.send("PHONE " + window.screen.width + " " + window.screen.height + " 0 2 :" + getClientDeviceModel()+"\r\n");
+              document.getElementById("sec").innerHTML += ">>> Conexion exitosa..."+"\r\n";
               document.getElementById("sec").scrollTop += 100;
-          }
+              ws.send("JOIN\r\n");
+              salida=true;
+              balance();
+              }else {
+              ws.send("FWLISTVER 0\r\n");
+              ws.send("ADDONS 0\r\n");
+              ws.send("MYADDONS 0 0\r\n");
+              ws.send("PHONE " + window.screen.width + " " + window.screen.height + " 0 2 :" + getClientDeviceModel()+"\r\n");
+              document.getElementById("sec").innerHTML += ">>> Conexion exitosa..."+"\r\n";
+              document.getElementById("sec").scrollTop += 100;
+              ws.send("JOIN\r\n");
+              salida=true;
+              balance();
+            }
+            }
             if(snippets[0] === "883"){
               localStorage.setItem("FWLISTVER", snippets[1]);
             }
@@ -476,9 +489,7 @@
               mx =parseInt(localStorage.getItem("points"));
             }
             if(snippets[0] === "BROWSER"){
-              if(uc.checked== true){
-                ver = false;
-              }
+              seg=0;
               info="";
               remo1="";
               let info2 = snippets[2];
@@ -672,23 +683,6 @@
             document.getElementById("punto").innerHTML ="Balance Actual "+s+'\r\n';
           }
           const Valid = async() => {
-            if(uc.checked == true){
-              localStorage.setItem("on4", 1);
-              setTimeout(() => {
-                  document.getElementById("sec").innerHTML += ">>> Volviendo"+"\r\n";
-                  var planet = document.getElementById("plntgo");
-                  planet.click();
-              }, 800);
-            }else{
-              localStorage.setItem("on4", 0);
-              if(peligro == true){
-                setTimeout(() => {
-                  document.getElementById("sec").innerHTML += ">>> Volviendo"+"\r\n";
-                  var planet = document.getElementById("plntgo");
-                  planet.click();
-              }, 800);
-              }
-            }
             let resy=saber;
             var tu,tu2;
             let resf=resy.replaceAll("qwertyuiopasdfghjklzxcvbnm,.-><^/%=?¿[]{}*+", "");
