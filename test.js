@@ -330,7 +330,8 @@
                   planet.click();
                 }, 500);
             }
-            if(snippets[0] === "852"){
+            if(snippets[0] === "854"){
+              console.clear();
               data_clear();
               var view = event.data;
               var review = view.split(":").join("");
@@ -409,7 +410,7 @@
             for (let x = 0; x < userID.length; ++x) {
               if(parseInt(snippets[1]) === parseInt(userID[x])){
                 let indexcheck = userID.indexOf(userID[x]);
-                userID[indexcheck] = "clear";
+                userID[indexcheck] = "";
                 console.log(userID)
                 break;
               }
@@ -601,6 +602,7 @@
         membersarr1 = [];
         useridarray= [];
         useridarray2 = [];
+        console.log("ids reiniciados")
       };
       let Reload = function (){
         setTimeout(() => {
@@ -1057,7 +1059,6 @@
             nsec = d.getSeconds();
           if (nmin <= 9) nmin = "0" + nmin;
           if (nsec <= 9) nsec = "0" + nsec;
-  
           var clocktext = "" + nhour + ":" + nmin + ":" + nsec + "";
           document.getElementById("clockbox").innerHTML = clocktext;
         }
