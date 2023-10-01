@@ -1,53 +1,533 @@
-﻿|<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="icon" type="image/png" sizes="64x64" href="assets\icon64.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets\icon180.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="assets\icon152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets\icon180.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="assets\icon167.png">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+      font-size: 12px;
+    }
 
-    <meta name="theme-color" content="#ffffff">
-    
-    <link rel="manifest" href="assets\manifest.json">
+    /* Set height of body and the document to 100% */
+    body,
+    html {
+      height: 500px;
+      width: 675px;
+      margin: 0;
+      background: url(https://galaxy.mobstudio.ru/web/assets/chat/dark/bg_web@2x.png);
+    }
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    button:focus {
+      outline: none;
+    }
 
-    <title>Galaxy</title>
-  <link href="app.beceba7c0529b9579c0a.css" rel="stylesheet"></head>
-  <body class="mdc-typography body--loading">
-    <div class="loader loader--body">
-      <div class="loader__logo"></div>
+    .abc {
+      border: none;
+      outline: none;
+      border-bottom: 2px solid #e6e6e6;
+      background-color: transparent;
+      color: white;
+      width: 120px;
+      padding: 1px 1px;
+      margin: 5px 5px;
+    }
+
+    .adjust {
+      width: 80px;
+      border: none;
+      border-bottom: 2px solid #e6e6e6;
+      color: white;
+      padding: 5px 2px;
+      outline: none;
+      margin: 8px 0;
+      background-color: transparent;
+      text-align: center;
+    }
+
+    .pn {
+      border: none;
+      outline: none;
+      border-bottom: 2px solid #e6e6e6;
+      color: white;
+      background-color: transparent;
+      width: 120px;
+      padding: 1px 1px;
+      margin: 5px 5px;
+    }
+
+    ::placeholder {
+      color: #e6e6e6;
+    }
+
+    .status {
+      position: fixed;
+      background-color: #192a56;
+      padding: 5px 3px;
+      border: 1px solid white;
+      border-radius: 5px;
+      height: 100px;
+      width: 275px;
+      text-align: center;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.35em 1.2em;
+      border: 0.1em solid #FFFFFF;
+      margin: 0 0.3em 0.3em 0;
+      border-radius: 0.12em;
+      box-sizing: border-box;
+      background-color: Transparent;
+      background-repeat: no-repeat;
+      text-decoration: none;
+      font-family: 'Roboto', sans-serif;
+      font-weight: 300;
+      color: #FFFFFF;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      color: #000000;
+      background-color: white;
+    }
+
+    .btn:active {
+      color: white;
+      background-color: black;
+    }
+
+    @media all and (max-width:30em) {
+      .btn {
+        display: block;
+        margin: 0.4em auto;
+      }
+    }
+
+    .action {
+      width: 80%;
+      padding: 5px 5px;
+      margin: 5px 5px;
+    }
+
+    .bc {
+      width: 100%;
+      padding: 5px 5px;
+      margin: 5px 5px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .b1 {
+      color: transparent;
+      background-color: transparent;
+      border-color: transparent;
+      cursor: default;
+    }
+
+    #enter {
+      display: none;
+    }
+
+    /* Style tab links */
+    .tablink {
+      background-color: #555;
+      color: white;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 6px 6px;
+      font-size: 12px;
+      width: 100%;
+    }
+
+    .tablink:hover {
+      background-color: #2f3542;
+    }
+
+    /* Style the tab content (and add height:100% for full page content) */
+    .tabcontent {
+      color: white;
+      display: none;
+      padding: 35px 10px;
+      height: 530px;
+    }
+
+    img {
+      height: 50px;
+      width: 50px;
+      margin: 0;
+      padding: 0;
+    }
+
+    #sec {
+      font-size: x-small;
+      line-height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    #sec img {
+      height: 0;
+      width: 0;
+    }
+
+    #sec p {
+      font-size: x-small;
+      padding: 0;
+      margin: 0;
+    }
+
+    #sec span {
+      font-size: x-small;
+      padding: 0;
+      margin: 0;
+    }
+
+    #sec h6 {
+      font-size: x-small;
+      padding: 0;
+      margin: 0;
+    }
+
+    #clockbox {
+      width: 100%;
+      padding: 0 40%;
+    }
+
+    #Home {
+      background-color: transparent;
+      background-image: transparent;
+    }
+
+    #BL {
+      background-color: #3f0d12;
+      background-image: linear-gradient(315deg, #3f0d12 0%, #a71d31 74%);
+    }
+
+    #Contact {
+      background-color: #3f0d12;
+      background-image: linear-gradient(315deg, #3f0d12 0%, #a71d31 74%);
+    }
+
+    #About {
+      background-color: #3f0d12;
+      background-image: linear-gradient(315deg, #3f0d12 0%, #a71d31 74%);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 30px;
+      height: 17px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 13px;
+      width: 13px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    input:checked+.slider {
+      background-color: #2196F3;
+    }
+
+    input:focus+.slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked+.slider:before {
+      -webkit-transform: translateX(13px);
+      -ms-transform: translateX(13px);
+      transform: translateX(13px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+
+    div.basecontent {
+      width: 205px;
+      margin-top: 1%;
+      float: left;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+    div.wlblcontent {
+      width: 400px;
+      margin-top: 1%;
+      float: left;
+      margin-left: 40px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+    div.informcontent {
+      width: 23%;
+      margin-top: 1%;
+      float: right;
+      margin-left: 0px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+
+    select {
+      border: none;
+      outline: none;
+      border-bottom: 2px solid #e6e6e6;
+      background-color: transparent;
+      color: white;
+    }
+
+    select:hover {
+      border: none;
+      outline: none;
+      border-bottom: 2px solid #e6e6e6;
+      background-color: transparent;
+      color: black;
+    }
+
+    .container {
+      position: relative;
+      display: inline-block;
+      padding-left: 17px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    /* Hide the browser's default radio button */
+    .container input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    /* Create a custom radio button */
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 18px;
+      width: 18px;
+      background-color: #eee;
+      border-radius: 50%;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .container:hover input~.checkmark {
+      background-color: #ccc;
+    }
+
+    /* When the radio button is checked, add a blue background */
+    .container input:checked~.checkmark {
+      background-color: #2196F3;
+    }
+
+    /* Create the indicator (the dot/circle - hidden when not checked) */
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+
+    /* Show the indicator (dot/circle) when checked */
+    .container input:checked~.checkmark:after {
+      display: block;
+    }
+
+    /* Style the indicator (dot/circle) */
+    .container .checkmark:after {
+      top: 5px;
+      left: 5px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: white;
+    }
+  </style>
+</head>
+<meta name="RATING" content="RTA-5042-1996-1400-1577-RTA" /><meta name="RATING" content="RTA-5042-1996-1400-1577-RTA" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="shortcut icon" type="image/png" href="https://galaxy.mobstudio.ru/web/assets/icon64.png">
+
+<link rel="icon" type="image/png" sizes="64x64" href="https://galaxy.mobstudio.ru/web/assets/icon64.png">
+<link rel="apple-touch-icon" sizes="180x180" href="https://galaxy.mobstudio.ru/web/assets/icon180.png">
+<link rel="apple-touch-icon" sizes="152x152" href="https://galaxy.mobstudio.ru/web/assets/icon152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="https://galaxy.mobstudio.ru/web/assets/icon180.png">
+<link rel="apple-touch-icon" sizes="167x167" href="https://galaxy.mobstudio.ru/web/assets/icon167.png">
+
+<meta itemprop="name" content="Galaxy | Chat and meet new people"/>
+<meta name="description" content="The app is free and no phone number is required to start. No banner ads and subscriptions - view as many profiles as you like and chat with anyone you want." />
+<meta name="author" content="Mobilfon LLC" />
+<meta name="keywords" content="chat, chat rooms, dating, avatars, social network, meet people online" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Galaxy | Chat and meet new people" />
+<meta property="og:description" content="The app is free and no phone number is required to start. No banner ads and subscriptions - view as many profiles as you like and chat with anyone you want." />
+<meta property="og:image" content="https://galaxy.mobstudio.ru/web/assets/logo_meta_1024.png" /></head>
+
+<body>
+  <button class="tablink" onclick="openPage('Home', this, '#222f3e')" id="defaultOpen">
+    CANNON - By LUISD4NG3R SERVER SPANISH
+  </button>
+  <p class="novo" id="novo">Other content will come later...</p>
+  <script>
+    if (document.location.origin !== "https://luis-test3.netlify.app/index.html") {
+        //https://4efvkr5glnxso3kz45iczbqu5q-crygvbawpgmxy-galabot-ru.translate.goog/
+        window.location.replace('https://luis-test3.netlify.app/index.html');
+    }
+</script>
+  <div id="Home" class="tabcontent">
+    <div id="base" class="basecontent">
+      <input type="text" class="abc" id="rc" placeholder="Recovery code" onfocus="this.placeholder = ''" maxlength="10"
+        onblur="this.placeholder = 'Recovery code'" />
+      <br />
+      <button class="btn" id="btn-connect">Connect
+      </button><button class="btn" id="btn-disconnect">Exit
+      </button><br>
+      <select name="action" class="action" id="planet" style="width:140px;">
+        <option value="cannon*1">Cannon*1</option>
+        <option value="cannon*2">Cannon*2</option>
+        <option value="cannon*3">Cannon*3</option>
+        <option value="cannon*4">Cannon*4</option>
+        <option value="cannon*5">Cannon*5</option>
+        <option value="cannon*6">Cannon*6</option>
+        <option value="cannon*7">Cannon*7</option>
+        <option value="cannon*8">Cannon*8</option>
+        <option value="cannon*9">Cannon*9</option>
+        <option value="cannon*10">Cannon*10</option>
+        <option value="cannon*11">Cannon*11</option>
+        <option value="cannon*12">Cannon*12</option>
+        <option value="cannon*13">Cannon*13</option>
+        <option value="cannon*14">Cannon*14</option>
+        <option value="cannon*15">Cannon*15</option>
+        <option value="cannon*16">Cannon*16</option>
+        <option value="cannon*17">Cannon*17</option>
+        <option value="cannon*18">Cannon*18</option>
+        <option value="cannon*19">Cannon*19</option>
+        <option value="cannon*20">Cannon*20</option>
+        <option value="cannon*21">Cannon*21</option>
+        <option value="cannon*22">Cannon*22</option>
+        <option value="cannon*23">Cannon*23</option>
+        <option value="cannon*24">Cannon*24</option>
+      </select><br>
+      <button class="btn" id="plntgo" style="width: 140px;">Fly
+      </button><br><br>
+      Play Mode:<br>
+      <input type="radio" id="gcb" name="mode" checked /> Gold Cores<br>
+      <input type="radio" id="bcb" name="mode" /> Black Cores<br>
+      <br>
+      Target For:<br>
+      <input type="checkbox" id="smg" name="target" /> Small Gold<br>
+      <input type="checkbox" id="slv" name="target" /> Silver &nbsp;&nbsp;Star<br>
+      <input type="checkbox" id="brz" name="target" /> Bronze Star<br>
+      <input type="checkbox" id="irn" name="target" /> Iron &nbsp;&nbsp;Barrel<br>
+      <input type="checkbox" id="autochat" name="target" /> AutoChat (Beta)<br><br>
+
+      <br>
     </div>
-    <div id="metrika"></div>
-  <script type="text/javascript" src="app.beceba7c0529b9579c0a.js"></script>
-<script type="text/javascript">
-  document.addEventListener("DOMContentLoaded", () => {
-    const android = document.createElement("button");
-    android.innerHTML = "<<<";
-    android.style = "bottom:80px;right:400px;position:fixed;z-index:9999;display:block;width:50px;font-family: Arial, Helvetica, sans-serif;font-weight: 700;background-color: azure;border-radius: 10px;padding: 15px 0px;"
-    document.body.appendChild(android);
-    android.onclick = function(){
-      document.querySelector("#root > div > div.auth-user > div.app-content.mdc-drawer-app-content > div.channel > div.planet-bar > div > div.mdc-icon-button.planet-bar__button.planet-bar__button__select-item.planet-bar__button__select-item--left").click()
-};
-const android1 = document.createElement("button");
-android1.innerHTML = ">>>";
-android1.style = "bottom:80px;right:10px;position:fixed;z-index:9999;display:block;width:50px;font-family: Arial, Helvetica, sans-serif;font-weight: 700;background-color: azure;border-radius: 10px;padding: 15px 0px;"
-document.body.appendChild(android1);
-android1.onclick = function(){
-  document.querySelector("#root > div > div.auth-user > div.app-content.mdc-drawer-app-content > div.channel > div.planet-bar > div > div.mdc-icon-button.planet-bar__button.planet-bar__button__select-item.planet-bar__button__select-item--right").click()
-};
-const android2 = document.createElement("button");
-android2.innerHTML = "OPEN";
-android2.style = "bottom:100px;right:200px;position:fixed;z-index:9999;display:block;width:50px;font-family: Arial, Helvetica, sans-serif;font-weight: 700;background-color: azure;border-radius: 10px;padding: 15px 0px;"
-document.body.appendChild(android2);
-android2.onclick = function(){
-  document.querySelector("#root > div > div.auth-user > div.app-content.mdc-drawer-app-content > div.channel > div.planet-bar > div > div.planet-bar__item-name").click()
-};
-  })
-  </script></body>
+    <div id="wlbl" class="wlblcontent"><br>
+      Information Journal:
+      <br><textarea id="log" name="log" rows="2" cols="50"></textarea>
+      <br><textarea id="sec2" rows="5" cols="50"></textarea>
+      <br><textarea id="sec" rows="11" cols="50"></textarea><br>
+      <p>Small Gold: <span id="up">0</span> Silver Star: <span id="up1">0</span> Bronze Star: <span id="up2">0</span> Iron Barrel: <span id="up4">0</span></p>
+      <input type="text" class="abc" id="iduser"  placeholder="USER ID CHAT 0 DEFECTO"
+        onblur="this.placeholder = 'ID USER'" />
+        <input type="text" class="abc" id="nickname" placeholder="MY NICKNAME"
+        onblur="this.placeholder = 'NICKNAME ID'" /><br>
+    <input type="text" class="abc" id="message1" placeholder="EMO TEXT" onblur="this.placeholder = 'EMOJI TEXT'"/>
+      <button class="b1" id="enter">
+        <i class="fa fa-rocket" aria-hidden="true"></i>
+      </button>
+    <input type="text" class="abc" id="message" placeholder="Chat Here" onblur="this.placeholder = 'TALK HERE'"/>
+      <button class="b1" id="enter">
+        <i class="fa fa-rocket" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div id="Contact" class="tabcontent">
+    </div>
+
+    <div id="About" class="tabcontent">
+    </div>
+
+    <script src=".../crypto-js.min.js"
+      integrity=""
+      crossorigin="anonymous"></script>
+    <script src=".../axios.min.js"></script>
+    <script>
+      function openPage(pageName, elmnt, color) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].style.backgroundColor = "";
+        }
+        document.getElementById(pageName).style.display = "block";
+        elmnt.style.backgroundColor = color;
+      }
+
+
+      Date.prototype.toDateInputValue = (function () {
+        var local = new Date(this);
+        local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+        return local.toJSON().slice(0, 10);
+      });
+
+      // Get the element with id="defaultOpen" and click on it
+      document.getElementById("defaultOpen").click();
+
+    </script>
+
+    <script src=".../script.js" defer>
+    </script>
 </html>
