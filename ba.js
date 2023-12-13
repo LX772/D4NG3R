@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const prompt = require("prompt-sync")({ sigint: true });
 const machineId = require('node-machine-id');
 const axios = require('axios');
-var keys = [];
+var keys = ["ef0e98d5d81a2f755eaaff89d232f25914470a30f5748e3fa2c21a1cb63e7c04"];
 machineId.machineId()
   .then(id => {
     console.log('Your Key:', id);
@@ -14,7 +14,7 @@ machineId.machineId()
     }
   })
   .catch(error => {
-    console.error('Error al obtener el Machine ID:', error);
+    console.log('Error al obtener el Machine ID:', error);
     process.exit(1);
   });
 var check, tk, servr, Lang;
