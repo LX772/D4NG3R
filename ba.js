@@ -305,7 +305,7 @@ let updateGame = async function (retries = 3){
     }
   }
   const responseHandler = async (response) => {
-    if (response.url().includes('galaxy.mobstudio.ru/services/?&userID='+useridg+"password="+passwordg+"&query_rand=")) {
+    if (response.url().includes('galaxy.mobstudio.ru/services/?&userID=')) {
       const content = await response.text();
   
       try {
