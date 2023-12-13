@@ -1,6 +1,22 @@
 const puppeteer = require('puppeteer');
 const prompt = require("prompt-sync")({ sigint: true });
+const machineId = require('node-machine-id');
 const axios = require('axios');
+var keys = [];
+machineId.machineId()
+  .then(id => {
+    console.log('Your Key:', id);
+    if(keys.includes(id) === false){
+        console.log("Asegurate de enviarle tu key al soporte...");
+        process.exit(1);
+    }else if(keys.includes(id) === true){
+        console.log("Key Activada...");
+    }
+  })
+  .catch(error => {
+    console.error('Error al obtener el Machine ID:', error);
+    process.exit(1);
+  });
 var check, tk, servr, Lang;
 const RC = prompt("Inserta tu RC: ");
 const check2 = prompt("Visualizar Web (si/no): ");
