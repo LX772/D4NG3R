@@ -81,17 +81,18 @@ for (let x = 0; x < tienda.length; x++) {
         {
           headers: {
             'Accept': 'application/json, text/plain, */*',
-            "X-Galaxy-Kbv": "352",
-            "X-Galaxy-Platform": "web",
-            "X-Galaxy-Lng": document.getElementById("cambi").value,
-            "X-Galaxy-Client-Ver": "9.5",
-            "X-Galaxy-Model": getClientDeviceModel(),
-            "X-Galaxy-User-Agent": navigator.userAgent,
-            "X-Galaxy-Scr-Dpi": window.devicePixelRatio,
-            "X-Galaxy-Os-Ver": 1,
-            "X-Galaxy-Orientation": "portrait",
-            "x-galaxy-scr-h": window.innerHeight,
-            "x-galaxy-scr-w": window.innerWidth
+        "User-Agent": userAgent,
+      "X-Galaxy-Kbv": "352",
+      "X-Galaxy-Platform": "web",
+      "X-Galaxy-Lng": Lang,
+      "X-Galaxy-Client-Ver": "9.5",
+      "X-Galaxy-Model": "chrome 118.0.5993.70",
+      "X-Galaxy-User-Agent": userAgent,
+      "X-Galaxy-Scr-Dpi": 1,
+      "X-Galaxy-Os-Ver": 1,
+      "X-Galaxy-Orientation": "portrait",
+      "x-galaxy-scr-h": ancho,
+      "x-galaxy-scr-w": altura,
           },
         }
       )
@@ -99,17 +100,18 @@ for (let x = 0; x < tienda.length; x++) {
         {
           headers: {
             'Accept': 'application/json, text/plain, */*',
-            "X-Galaxy-Kbv": "352",
-            "X-Galaxy-Platform": "web",
-            "X-Galaxy-Lng": document.getElementById("cambi").value,
-            "X-Galaxy-Client-Ver": "9.5",
-            "X-Galaxy-Model": getClientDeviceModel(),
-            "X-Galaxy-User-Agent": navigator.userAgent,
-            "X-Galaxy-Scr-Dpi": window.devicePixelRatio,
-            "X-Galaxy-Os-Ver": 1,
-            "X-Galaxy-Orientation": "portrait",
-            "x-galaxy-scr-h": window.innerHeight,
-            "x-galaxy-scr-w": window.innerWidth
+        "User-Agent": userAgent,
+      "X-Galaxy-Kbv": "352",
+      "X-Galaxy-Platform": "web",
+      "X-Galaxy-Lng": Lang,
+      "X-Galaxy-Client-Ver": "9.5",
+      "X-Galaxy-Model": "chrome 118.0.5993.70",
+      "X-Galaxy-User-Agent": userAgent,
+      "X-Galaxy-Scr-Dpi": 1,
+      "X-Galaxy-Os-Ver": 1,
+      "X-Galaxy-Orientation": "portrait",
+      "x-galaxy-scr-h": ancho,
+      "x-galaxy-scr-w": altura,
           },
         }
       )
