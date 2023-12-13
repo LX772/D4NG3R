@@ -96,7 +96,7 @@ for (let x = 0; x < tienda.length; x++) {
           },
         }
       )
-  await axios.get("https://galaxy.mobstudio.ru/services/?&userID="+useridg+"&password="+passwordg+"&a=quiz_energy_shop_buy&item_id=3&usercur="+useridg+"&random="+Math.random(),
+  await axios.get("https://galaxy.mobstudio.ru/services/?&userID="+useridg+"&password="+passwordg+"&a=quiz_energy_shop_buy&item_id=2&usercur="+useridg+"&random="+Math.random(),
         {
           headers: {
             'Accept': 'application/json, text/plain, */*',
@@ -305,7 +305,7 @@ let updateGame = async function (retries = 3){
     }
   }
   const responseHandler = async (response) => {
-    if (response.url().includes('galaxy.mobstudio.ru/services/?&userID=')) {
+    if (response.url().includes('galaxy.mobstudio.ru/services/?&userID='+useridg+"password="+passwordg+"&query_rand=")) {
       const content = await response.text();
   
       try {
@@ -378,8 +378,13 @@ function limpiarConsola() {
         nsec = d.getSeconds();
       if (nmin <= 9) nmin = "0" + nmin;
       if (nsec <= 9) nsec = "0" + nsec;
-      if(nhour !== hora) tk=true;
-      if(nhour === hora && tk === true) tk=false, tienda[0].compras = 1,tienda[1].compras = 1,tienda[2].compras = 1;
+      if(nhour !== hora) tk=true,tienda[0].compras = 1,tienda[1].compras = 1,tienda[2].compras = 1;
+      if(nhour === hora && tk === true){
+        tk=false;
+      if(dinero >= "1.49"){
+       multi();
+      }
+    }
       let clocktext = "" + nhour + ":" + nmin + ":" + nsec;
     }
     // Llamar a la función expuesta en el contexto de la página
@@ -473,13 +478,6 @@ await page.evaluate((instances) => {
         alla();
           break;
       }else if(n[x] === "class=\"s__card_energy_count\">0</div></div></div><style>\n"){
-          if(dinero >= "1.49"){
-            await page.evaluate(() => {
-              document.querySelector("#root > div > div.auth-user > div.app-content.mdc-drawer-app-content > div.browser.browser--auth-user > header > div > section.mdc-top-app-bar__section.mdc-top-app-bar__section--align-end > div.mdc-top-app-bar__navigation-icon.app-bar__navigation-icon.mdc-icon-button").click();
-           });
-           multi();
-              break;
-          }else{
             console.log(0)
             console.log("esperando 30min...");
             await page.evaluate(() => {
@@ -489,7 +487,6 @@ await page.evaluate((instances) => {
             PlayGame();
           }, 1800000);
           break;
-          }
       }else if(n[x] === "class=\"s__card_energy_count\">5</div></div></div><style>\n"){
         console.log(5)  
         alla();
