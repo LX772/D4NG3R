@@ -1,4 +1,14 @@
-      var id;
+ navigator.wakeLock;
+        try {
+  const wakeLock = async() => {
+    await navigator.wakeLock.request("screen");
+  }
+   wakeLock();
+} catch (err) {
+  // the wake lock request fails - usually system related, such being low on battery
+  console.log("the wake lock request fails - usually system related, such being low on battery",`${err.name}, ${err.message}`);
+}
+var id;
       var useridg;
       var passwordg;
       var pos;
@@ -15,7 +25,7 @@
       var posi1;
       var attkbase;
       var lista = [], lista2=[];
-      var userids, userids2, userid2,listadef=[];
+      var userids=[], userids2=[], userid2,listadef=[];
       var membersarr = [], snipfinal = [];
       var userid;
       var useridarray=[], membersarr1=[],useridarray2=[];
@@ -29,6 +39,7 @@
       var variable, variable1;
       var nombre, nombre2;
       var acciones = 1;
+      let startTime;
       var unasola = 1;
       var nickfound;
       var accionRes;
@@ -38,6 +49,11 @@
       var haaapsi;
       var btn = document.getElementById("btn-connect");
       var codigo = 1;
+      let ping;
+      function actualizarEstadoPing(estado, color) {
+        display.textContent = `${estado} ms`;
+        display.style.color = color;
+      }
 	  function incrementAttack() {
 		var value = parseInt(document.getElementById('attack').value, 10);
 		value = isNaN(value) ? 0 : value, increment = parseInt(document.getElementById('increment').value);
@@ -75,13 +91,9 @@
         btn.click();
       }, parseInt(document.getElementById("reconnect").value));
     }
+    const display = document.getElementById("ping");
       btn.addEventListener("click", () => {
-        console.clear();
-        membersarr1=[], N = 1;
-        membersarr=[],userid=[],listadef=[],userids=[],userids2=[],userid2=[],useridarray=[],useridarray2=[];
-        document.getElementById("sec").innerHTML = "";
-        document.getElementById("sec").style.color="#00ffff";
-        document.getElementById("sec4").innerHTML="";
+        let N = 1;
         attkbase = document.getElementById("attack").value;
         defbase = document.getElementById("waiting").value;
         limit = document.getElementById("limit").value;
@@ -111,10 +123,20 @@
         }
         ws.onopen = () => { 
           ws.send(":pt IDENT " + document.getElementById("devtype").value + " -2 4030 1 2 :GALA\r\n");
+          startTime = Date.now();
+          setInterval(() => {
+            startTime = Date.now();
+          }, 5000);
         };
         ws.onmessage = (event) => {
           var text = event.data;
           var snippets = text.split(" ");
+          ping = Date.now() - startTime;
+          if (ping < 100) {
+            actualizarEstadoPing(ping, 'green');
+          } else {
+            actualizarEstadoPing(ping, 'yellow');
+          }
           if (snippets[0] === "HAAAPSI") {
             haaapsi = snippets[1];
             ws.send("RECOVER " + rc2 + "\r\n");
@@ -183,7 +205,7 @@
                 }, 720);}
                 N--;}
               };
-              black = document.getElementById("whitelist2").value.split("\n");
+              let black = document.getElementById("whitelist2").value.split("\n");
               black.forEach((element) => {
               if (membersarr.includes(element.toLowerCase())) {
                 let indexcheck = membersarr.indexOf(element.toLowerCase());
@@ -192,33 +214,33 @@
               }
             });
               whitelist = document.getElementById("whitelist").value.split("\n");
+              let useridset = new Set();
               membersarr.forEach((element) => {
-                whitelist.forEach((element2) => {
-                  if(element === element2){
-                    if (membersarr.includes(element2.toLowerCase())) {
-                var indexcheck = membersarr.indexOf(element2.toLowerCase());
-                membersarr[indexcheck]="";
-                useridarray.push(membersarr[indexcheck + 2]);
-              }
-                  }
-                })
-            });
-            let integers = useridarray.filter(Number);
-               userids.push(...integers.filter((element) => element.length > 7));
+  whitelist.forEach((element2) => {
+    if (element === element2) {
+      if (membersarr.includes(element2.toLowerCase())) {
+        var indexcheck = membersarr.indexOf(element2.toLowerCase());
+        // Agregar el valor al conjunto
+        useridset.add(membersarr[indexcheck + 2]);
+      }
+    }
+  });
+});
+               userids.push(Array.from(useridset));
                if(userids.filter(Number).length != 0) {
                     //ws.send("test - " + membersarr[memberindex]);
                     if(Ran.checked == true){
-                       userid = userids.filter(Number)[Math.floor(Math.random() * userids.length)]+"\r\n";
+                       userid = userids.filter(Number)[Math.floor(Math.random() * userids.length)];
                       }
                     else if(reverse.checked === true){
-                      userid = userids.filter(Number)[userids.length - 1]+"\r\n";
+                      userid = userids.filter(Number)[userids.length - 1];
                     }else{
-                      userid = userids.filter(Number)[0]+"\r\n";
+                      userid = userids.filter(Number)[0];
                     };
-                    document.getElementById("sec").innerHTML += "Found Enemy in "+timing+"ms"+"\r\n";
+                    document.getElementById("sec").innerHTML += "Atk Found Enemy in "+timing+"ms"+"\r\n";
                     document.getElementById("sec").scrollTop += 1000;
                     defender = setTimeout(() => {
-                      aprisionar(userid, userids.filter(Number).length != 0);
+                      new aprisionar(userid, userids.filter(Number).length !== 0);
                     }, timing);
                     if (timeshift.checked == true)vai = setTimeout(() => {
                       automatic(incrementAttack, decrementAttack);
@@ -232,6 +254,7 @@
               snip1 = snip.split(" ");
               membersarr1.push(...snip1);
               let ramdon4 = Math.floor(Math.random() * 2);
+              let black = document.getElementById("whitelist2").value.split("\n");
               black.forEach((element) => {
               if (membersarr.includes(element.toLowerCase())) {
                 let indexcheck = membersarr.indexOf(element.toLowerCase());
@@ -242,16 +265,15 @@
               whitelist.forEach((element) => {
               if (snipfinal.includes(element.toLowerCase())) {
                 let indexcheck = snipfinal.indexOf(element.toLowerCase());
-                useridarray2.push(snipfinal[indexcheck + 2]);
+                useridarray2 = snipfinal[indexcheck + 2];
               }
             });
-            let integers = useridarray2.filter(Number);
-            let prueba2 = integers.filter((element) => element.length > 7);userids2.push(...prueba2);
-              if(prueba2.filter(Number).length != 0) {
+            userids2.push(useridarray2);
+              if(userids2.filter(Number).length !== 0) {
                 userid2 = userids2.filter(Number)[0];
-                let prueba = prueba2.filter(Number)[0];
+                let prueba = userids2.filter(Number)[0];
                 let timing = parseInt(document.getElementById("waiting").value);
-                document.getElementById("sec").innerHTML += "Found Enemy in "+timing+"ms"+"\r\n";
+                document.getElementById("sec").innerHTML += "Def Found Enemy in "+timing+"ms"+"\r\n";
                 document.getElementById("sec").scrollTop += 1000;
                 defender = setTimeout(() => {
                   new aprisionar(prueba, userids2.filter(Number).includes(prueba) === true);
@@ -302,7 +324,7 @@
                 membersarr[indexcheck] = "KING";
               }
             });
-              black = document.getElementById("whitelist2").value.split("\n");
+              let black = document.getElementById("whitelist2").value.split("\n");
               let black2 = document.getElementById("whitelist3").value.split("\n");
               membersarr.forEach((element) => {
                 black2.forEach((element2) => {
@@ -323,7 +345,7 @@
             });
 
                let integers = membersarr.filter(Number);
-               userids.push(...integers.filter((element) => element.length > 7));
+               userids.push(...integers.filter((element) => element.length >= 6));
                if(userids.filter(Number).length != 0) {
                     //ws.send("test - " + membersarr[memberindex]);
                     if(Ran.checked == true){
@@ -337,7 +359,7 @@
                     document.getElementById("sec").innerHTML += "Found Enemy in "+timing+"ms"+"\r\n";
                     document.getElementById("sec").scrollTop += 1000;
                     defender = setTimeout(() => {
-                      aprisionar(userid, userids.filter(Number).length != 0);
+                      new aprisionar(userid, userids.filter(Number).length != 0);
                     }, timing);
                     if (timeshift.checked == true)vai = setTimeout(() => {
                       automatic(incrementAttack, decrementAttack);
@@ -356,6 +378,7 @@
               let rey = king+" "+id;
               let divi = rey.split(" ");
               let black2 = document.getElementById("whitelist3").value.split("\n");
+              let black = document.getElementById("whitelist2").value.split("\n");
               divi.forEach((element) => {
               if (snipfinal.includes(element)) {
                 let indexcheck = snipfinal.indexOf(element);
@@ -375,7 +398,7 @@
               }
             });
             let integers = snipfinal.filter(Number);
-            let prueba2 = integers.filter((element) => element.length > 7);userids2.push(...prueba2);
+            let prueba2 = integers.filter((element) => element.length >= 6);userids2.push(...prueba2);
               if(prueba2.filter(Number).length != 0) {
                 userid2 = userids2.filter(Number)[0];
                 let prueba = prueba2.filter(Number)[0];
@@ -493,7 +516,10 @@
             document.getElementById("sec2").scrollTop += 1000;
             if (document.getElementById('sec2').innerHTML.indexOf("65899314:off")!=-1){
               document.getElementById('sec2').innerHTML = "";
-              ws.send("QUIT :ds\r\n")
+              if (ws.readyState === WebSocket.OPEN) {
+          ws.send("QUIT :ds\r\n");
+        } else {
+        }
             }
             if (document.getElementById('sec2').innerHTML.indexOf("65899314:fly")!=-1){
               document.getElementById('sec2').innerHTML = "";
@@ -516,6 +542,7 @@
               }
             }
           }
+          if(snippets[0] === "855") reset();
           if (snippets[0] === "PART" && snippets[1]||snippets[0] === "SLEEP" && snippets[1]){
             for (let x = 0; x < userids.length; ++x) {
               if(parseInt(snippets[1]) === parseInt(userids[x])){
@@ -577,7 +604,10 @@
           }
           if(snippets[0] === "950" && snippets[1] === " :Você"){
             document.getElementById("sec").innerHTML += "Alguien entro desde otro dispositivo"+ "\r\n";
-            ws.send("QUIT :ds\r\n");
+            if (ws.readyState === WebSocket.OPEN) {
+          ws.send("QUIT :ds\r\n");
+        } else {
+        }
               btn.click();
           };
           if(snippets[0]==="JOIN" && snippets[3] === id){
@@ -626,7 +656,9 @@
             document.getElementById("standing").innerHTML = text;
           }
           if (snippets[0] === "PING\r\n") {
-            ws.send("PONG\r\n");
+            if (ws.readyState === WebSocket.OPEN) {
+              ws.send("PONG\r\n");
+            } else {}
           }
        };
       });
@@ -634,11 +666,20 @@
       document.getElementById("plntgo").addEventListener("click", () => {
         ws.send("JOIN " + document.getElementById("planet").value + "\r\n");
       });
-	  
+      let reset = function () {
+        membersarr1=[], N = 1;
+        membersarr=[],userid=[],listadef=[],userids=[],userids2=[],userid2=[],useridarray=[],useridarray2=[];
+        document.getElementById("sec").innerHTML = "";
+        document.getElementById("sec").style.color="#00ffff";
+        document.getElementById("sec4").innerHTML="";
+      }
       document
         .getElementById("btn-disconnect")
         .addEventListener("click", () => {
+          if (ws.readyState === WebSocket.OPEN) {
           ws.send("QUIT :ds\r\n");
+        } else {
+        }
           clearTimeout(recodef);
           document.getElementById("sec").innerHTML += "Offline"+ "\r\n";
           document.getElementById("sec").scrollTop += 1000;
@@ -679,14 +720,21 @@
       });
       let aprisionar = function (id, users) {
         if(users){
-          userNick(id);
-          ws.send("ACTION 3 " +id+ "\r\n");
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.send("ACTION 3 " +id+ "\r\n");
           if(secs.checked == false) OfflineAndConnect();
-        }else{}
+        } else {}
+        }else{
+          
+        }
       }
       let OfflineAndConnect = function () {
-        ws.send("QUIT :ds\r\n");
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send("QUIT :ds\r\n");
+        } else {
+        }
         clearTimeout(defender);
+        reset();
         document.getElementById("sec").innerHTML += "Offline"+ "\r\n";
         document.getElementById("sec").scrollTop += 1000;
         Reconexion();
