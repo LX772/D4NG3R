@@ -8,6 +8,7 @@ navigator.wakeLock;
   // the wake lock request fails - usually system related, such being low on battery
   console.log("the wake lock request fails - usually system related, such being low on battery",`${err.name}, ${err.message}`);
 }
+var id;
       var useridg;
       var passwordg;
       var pos;
@@ -24,55 +25,29 @@ navigator.wakeLock;
       var posi1;
       var attkbase;
       var lista = [], lista2=[];
-      var userids=[], userids2=[], userid2,listadef=[], membersarr2=[], userids3=[], userids4=[],userid4,userid5;
+      var userids=[], userids2=[], userid2,listadef=[];
       var membersarr = [], snipfinal = [];
       var userid;
-      var useridarray=[], useridarray4=[], membersarr1=[],useridarray2=[];
+      var useridarray=[], membersarr1=[],useridarray2=[];
       var defbase;
       var recodef;
       var notkick = 3, detener, defender;
       var z2, review2
-      var nick, king, rc;
+      var nick, king;
       var atacar, vai
       var loglimit = 0;
       var variable, variable1;
       var nombre, nombre2;
       var acciones = 1;
-      let startTime;
       var unasola = 1;
       var nickfound;
       var accionRes;
       var rc2;
       var codigos;
-      var ws, ws2;
+      var ws;
       var haaapsi;
       var btn = document.getElementById("btn-connect");
-      var btn1 = document.getElementById("btn-connect1");
       var codigo = 1;
-      let ping;
-      async function medirPing() {
-  const inicioPing = Date.now();
-
-  try {
-    // Realizar una solicitud a una URL específica (puedes cambiarla según tus necesidades)
-    await fetch('https://galaxy.mobstudio.ru/web/',{ 
-      method: 'GET',
-      mode: 'no-cors' });
-    ping = Date.now() - inicioPing;
-    
-    // Actualizar el estado del ping en el HTML
-    if (ping < 100) {
-      actualizarEstadoPing(ping, 'green');
-    } else {
-      actualizarEstadoPing(ping, 'yellow');
-    }
-  } catch (error) {
-  }
-}
-      function actualizarEstadoPing(estado, color) {
-        display.textContent = `${estado} ms`;
-        display.style.color = color;
-      }
 	  function incrementAttack() {
 		var value = parseInt(document.getElementById('attack').value, 10);
 		value = isNaN(value) ? 0 : value, increment = parseInt(document.getElementById('increment').value);
@@ -105,447 +80,13 @@ navigator.wakeLock;
     }
 		document.getElementById('waiting').value = value;
 		}
-    let Reconexion = async function (check) {
+    const Reconexion = async() =>{
       recodef=setTimeout(() => {
-        if(check === 1) btn.click();
-        if(check === 2) btn1.click();
+        btn.click();
       }, parseInt(document.getElementById("reconnect").value));
     }
-    setInterval(medirPing, 1000);
-    const display = document.getElementById("ping");
-    btn1.addEventListener("click", () => {
-        let N = 1;
-        let id;
-        attkbase = document.getElementById("attack").value;
-        defbase = document.getElementById("waiting").value;
-        limit = document.getElementById("limit").value;
-        limit2 = document.getElementById("limit2").value;
-        limit3 = document.getElementById("limit3").value;
-        limit4 = document.getElementById("limit4").value;
-        rc1 = document.getElementById("rc").value;
-        ws2 = new WebSocket("wss://cs.mobstudio.ru:6672");
-        const parseHaaapsi = (e) => {
-          let temp = CryptoJS.MD5(e).toString(CryptoJS.enc.Hex);
-          return (temp = (temp = temp.split("").reverse().join("0")).substr(
-            5,
-            10
-          ));
-        };
-        if (defbase <= limit){
-          document.getElementById("waiting").value = limit;
-        }
-        if (attkbase <= limit2){
-          document.getElementById("attack").value = limit2;
-        }
-        if (defbase >= limit3){
-          document.getElementById("waiting").value = limit3;
-        }
-        if (attkbase >= limit4){
-          document.getElementById("attack").value = limit4;
-        }
-        ws2.onopen = () => { 
-          ws2.send(":pt IDENT " + document.getElementById("devtype").value + " -2 4030 1 2 :GALA\r\n");
-        };
-        ws2.onmessage = (event) => {
-          let text = event.data;
-          let snippets = text.split(" ");
-          if (snippets[0] === "HAAAPSI") {
-            haaapsi = snippets[1];
-            ws2.send("RECOVER " + rc1 + "\r\n");
-          }
-          if (snippets[0] === "REGISTER") {
-            let temp = parseHaaapsi(haaapsi);
-            id = snippets[1];
-            let password = snippets[2];
-            let username = snippets[3];
-            useridg = id;
-            passwordg = password;
-            let finalusername = username.split("\r\n");
-            ws2.send(
-              "USER " +
-                id +
-                " " +
-                password +
-                " " +
-                finalusername +
-                " " +
-                temp +
-                "\r\n"
-            );
-          }
-          if (snippets[0] === "999") {
-            ws2.send("FWLISTVER 281\r\n");
-            ws2.send("ADDONS 251251 3\r\n");
-            ws2.send("MYADDONS 251251 3\r\n");
-            ws2.send("PHONE 1366 768 0 2 :chrome 99.0.4844.74\r\n");
-            document.getElementById("sec").innerHTML += "Conexion exitosa..."+"\r\n";
-            document.getElementById("sec").scrollTop += 100;
-            ws2.send("JOIN\r\n");
-          }
-          if (snippets[0] === "900") {
-            document.getElementById("sec").innerHTML += "Planet: "+snippets[1]+ "\r\n";
-            document.getElementById("sec").scrollTop += 100;
-          }
-			if (green.checked) {
-            if (snippets[0] === "353") {
-              let dump = event.data.split("353").join("");
-              let dump3 = dump.split("-3").join("");
-              let dump4 = dump3.split("-2").join("");
-              let members = dump4.split("@").join("");
-              let members2 = members.split(":").join("");
-              let members1 = members2.split("+").join("");
-              let finmembers = members1.toLowerCase();
-              let ramdon3 = Math.floor(Math.random() * 3);
-              membersarr2 = finmembers.split(" ");
-              membersarr1 = members2.split(" ");
-              let timing = parseInt(document.getElementById("attack").value);
-              if(moves.checked == true)
-              {if (N == 1){
-                if (posi == NaN || posi == "NaN"){
-                    clearTimeout(variable)
-                  }
-                if(ramdon3 == 1){
-                  variable = setTimeout(() => {
-                  ws2.send("REMOVE " + posi + "\r\n");
-                }, 840);}else if(ramdon3 == 2){
-                  variable = setTimeout(() => {
-                  ws2.send("REMOVE " + posi + "\r\n");
-                }, 940);
-                }else if(ramdon3 == 3){
-                  variable = setTimeout(() => {
-                  ws2.send("REMOVE " + posi + "\r\n");
-                }, 720);}
-                N--;}
-              };
-              let black = document.getElementById("whitelist2").value.split("\n");
-              black.forEach((element) => {
-              if (membersarr2.includes(element.toLowerCase())) {
-                let indexcheck = membersarr2.indexOf(element.toLowerCase());
-                membersarr2[indexcheck + 1] = "-";
-                membersarr2[indexcheck - 1] = "-";
-              }
-            });
-              whitelist = document.getElementById("whitelist").value.split("\n");
-              let useridset = new Set();
-              membersarr2.forEach((element) => {
-  whitelist.forEach((element2) => {
-    if (element === element2) {
-      if (membersarr2.includes(element2.toLowerCase())) {
-        var indexcheck = membersarr2.indexOf(element2.toLowerCase());
-        // Agregar el valor al conjunto
-        useridset.add(membersarr2[indexcheck + 2]);
-      }
-    }
-  });
-});
-               userids3.push(Array.from(useridset));
-               if(userids3.filter(Number).length != 0) {
-                    //ws.send("test - " + membersarr[memberindex]);
-                    if(Ran.checked == true){
-                       userid4 = userids3.filter(Number)[Math.floor(Math.random() * userids3.length)];
-                      }
-                    else if(reverse.checked === true){
-                      userid4 = userids3.filter(Number)[userids3.length - 1];
-                    }else{
-                      userid4 = userids3.filter(Number)[0];
-                    };
-                    document.getElementById("sec").innerHTML += "Atk Found Enemy in "+timing+"ms"+"\r\n";
-                    document.getElementById("sec").scrollTop += 1000;
-                    defender = setTimeout(() => {
-                      new aprisionar(userid4, userids3.filter(Number).length !== 0, 2);
-                    }, timing);
-                    if (timeshift.checked == true)vai = setTimeout(() => {
-                      automatic(incrementAttack, decrementAttack);
-                    }, timing+500);
-                  };
-                }
-			if (green.checked) {
-            if (snippets[0] === "JOIN" && snippets[3] != id) {
-              let snip = event.data;
-              let snipfinal = snip.toLowerCase().split(" ");
-              let snip1 = snip.split(" ");
-              membersarr2.push(...snip1);
-              let ramdon4 = Math.floor(Math.random() * 2);
-              let black = document.getElementById("whitelist2").value.split("\n");
-              black.forEach((element) => {
-              if (snipfinal.includes(element.toLowerCase())) {
-                let indexcheck = membersarr2.indexOf(element.toLowerCase());
-                membersarr2[indexcheck + 1] = "-";
-                membersarr2[indexcheck - 1] = "-";
-              }
-            });
-              whitelist.forEach((element) => {
-              if (snipfinal.includes(element.toLowerCase())) {
-                let indexcheck = snipfinal.indexOf(element.toLowerCase());
-                useridarray4 = snipfinal[indexcheck + 2];
-              }
-            });
-            userids4.push(useridarray4);
-              if(userids4.filter(Number).length !== 0) {
-                userid5 = userids4.filter(Number)[0];
-                let prueba = userids4.filter(Number)[0];
-                let timing = parseInt(document.getElementById("waiting").value);
-                document.getElementById("sec").innerHTML += "Def Found Enemy in "+timing+"ms"+"\r\n";
-                document.getElementById("sec").scrollTop += 1000;
-                defender = setTimeout(() => {
-                  new aprisionar(prueba, userids4.filter(Number).includes(prueba) === true, 2);
-                }, timing);
-              if (timeshift.checked == true)vai = setTimeout(() => {
-                automatic(incrementDefence, decrementDefence);
-              }, timing+500);
-                }
-            }
-          };
-        }
-          if (snippets[0] === "451") {
-            document.getElementById("sec").innerHTML = "Incorrect Recovery Code"+ "\r\n";
-          }
-          if (snippets[0] === "452" && snippets[2] === "is") {
-            document.getElementById("sec").innerHTML =
-              snippets[1] + " " + "is Blocked"+ "\r\n";
-          }
-          if (snippets[0] === "452") {
-            btn1.click();
-          }
-          if(snippets[0] === "FOUNDER"){
-            let idKing = event.data.split("FOUNDER").join("");
-            let id2king = idKing.split("\r\n").join("");
-            let id3king = id2king.split(" ");
-            king = id3king.filter(Number);
-          }
-          if (snippets[0] === "JOIN") {
-            let text;
-            text = snippets[2];
-			useridtext = snippets[3];
-      if(timing == undefined || timing == "undefined"){
-        if(king == useridtext){
-          var timing = "Rey Del Planeta"
-          document.getElementById("sec").innerHTML +="Detect "+text+" "+timing+"\r\n";
-            document.getElementById("sec").scrollTop += 100;
-        }
-        
-      }
-          }
-          if (snippets[0] === "403") {
-            document.getElementById("sec").innerHTML +=
-              "You are not on any planet..."+ "\r\n";
-              document.getElementById("sec").scrollTop += 1000;
-          }
-          if (snippets[0] === "471") {
-            document.getElementById("sec").innerHTML += "Planet is Full"+ "\r\n";
-            setTimeout(() => {
-              ws2.send("JOIN " + document.getElementById("planet").value + "\r\n");
-            }, 1000);
-            document.getElementById("sec").scrollTop += 1000;
-          }
-          if(snippets[0] === "854"){
-            let view = event.data;
-            let review = view.split(":").join("");
-            let revieww = review.split("854").join("");
-            let revieww3 = revieww.split("10349").join("");
-            let revieww4 = revieww3.split("3").join("");
-            let review1 = revieww4.split(" ");
-            let rev = review1.filter(Number);
-            review2 = rev.filter(function(element){
-                 return element.length >= 0;
-               });
-          };
-          if(accion.checked){
-          if (snippets[0] === "ACTION" && snippets[1] == userid || snippets[0] === "ACTION" && snippets[1] == userid2){
-            if(acciones == 1){
-              document.getElementById("sec").innerHTML += "Respondiendo Action"+ "\r\n";
-              document.getElementById("sec").scrollTop += 1000;
-                ws2.send("ACTION "+review2[Math.floor(Math.random() * review2.length)]+" "+snippets[2]+"\r\n")
-                acciones=2;;
-            }
-          }
-        };
-          if(acciones>=2){
-            setTimeout(() => {
-              acciones=1;;
-            }, 3000);
-          }
-            if (snippets[0] === "850") {
-            document.getElementById("sec4").innerHTML = event.data+ "\r\n";
-            if (document.getElementById("sec4").innerHTML.indexOf("850 :Você somente pode colocar na prisão após 3 segundo(s) depois de aparecer no planeta. Também não se pode colocar na prisão mais de uma vez a cada 3 segundo(s). Se você violar uma destas regras, você não poderá colocar na prisão por 15 segundo(s).")!==-1){
-              document.getElementById("sec").innerHTML += "I can't kick before 3s...\r\n";
-              document.getElementById("sec").scrollTop += 1000;
-              }
-            loglimit++;
-            document.getElementById("sec4").scrollTop += 1000;
-            }
-          if (loglimit >= 25){
-              document.getElementById("sec2").innerHTML = "";
-              loglimit = 0;
-            }
-            if (snippets[0] === "PRIVMSG") {
-              let text, y;
-              text = snippets[1];
-              let text1 = new Array(snippets[1]);
-              text1.toString();
-              text1.forEach((element) => {
-                if (membersarr1) {
-                  let indexcheck = membersarr1.indexOf(element);
-                  y = membersarr1[indexcheck -1];
-                }
-              });
-              for (var i = 4; i < snippets.length; ++i) {
-                text += snippets[i] + " ";
-              }
-            loglimit++;
-            document.getElementById("sec2").innerHTML += y +":"+ text;
-            document.getElementById("sec2").scrollTop += 1000;
-            if (document.getElementById('sec2').innerHTML.indexOf("65899314:off")!=-1){
-              document.getElementById('sec2').innerHTML = "";
-              if (ws.readyState === WebSocket.OPEN) {
-          ws2.send("QUIT :ds\r\n");
-        } else {
-        }
-            }
-            if (document.getElementById('sec2').innerHTML.indexOf("65899314:fly")!=-1){
-              document.getElementById('sec2').innerHTML = "";
-              let planet = document.getElementById("plntgo");
-                setTimeout(() => {
-                  planet.click();
-                }, 100);
-            }
-          }
-          if (snippets[0] === "PART" && snippets[1]||snippets[0] === "SLEEP" && snippets[1]){
-            for (let x = 0; x < userids3.length; ++x) {
-              if(parseInt(snippets[1]) === parseInt(userids3[x])){
-                let indexcheck = userids3.indexOf(userids3[x]);
-                userids3[indexcheck] = "";
-                userid4 = userids3.filter(Number)[0];
-                if(userids2.filter(Number).length == 0){
-                  userid4 = id;
-                }
-                break;
-              }
-            }
-          }
-          if(snippets[0] === "855") reset2();
-          if (snippets[0] === "PART" && snippets[1]||snippets[0] === "SLEEP" && snippets[1]){
-            for (let x = 0; x < userids4.length; ++x) {
-              if(parseInt(snippets[1]) === parseInt(userids4[x])){
-                let indexcheck = userids4.indexOf(userids4[x]);
-                userids4[indexcheck] = "";
-               if(Ran.checked == true){
-                  userid5 = userids[Math.floor(Math.random() * userids4.filter(Number).length)];
-                }
-                else if(reverse.checked == true){
-                  userid5 = userids4.filter(Number)[userids4.length - 1];
-                }else{
-                  userid5 = userids4.filter(Number)[0];
-                };
-                if(userids4.filter(Number).length === 0){
-                  userid5 = id;
-                }
-                break;
-              }
-              }
-              for (let x = 0; x < membersarr1.length; ++x) {
-                if(parseInt(snippets[1]) === parseInt(membersarr1[x])){
-                let indexcheck = membersarr1.indexOf(membersarr1[x]);
-                let m = membersarr1[indexcheck -1];
-                document.getElementById('sec').innerHTML += "left Planet "+ m+ "\r\n";
-                document.getElementById("sec").scrollTop += 1000;
-                break;
-              }
-            }
-          }
-          if(secs.checked == true){
-              if (document.getElementById('sec4').innerHTML.indexOf("850 :Você somente pode colocar na prisão após 3 segundo(s) depois de aparecer no planeta. Também não se pode colocar na prisão mais de uma vez a cada 3 segundo(s). Se você violar uma destas regras, você não poderá colocar na prisão por 15 segundo(s).") !==-1||document.getElementById('sec4').innerHTML.indexOf("850 :Você somente") !==-1|| document.getElementById('sec4').innerHTML.indexOf("850 :You can imprison only in 3s after you appear on Planet. You cant imprison more often than once in 3s. If you violate one of these rules, you wont be able to imprison users during 15s.") !==-1|| document.getElementById('sec4').innerHTML.indexOf("850 :Нельзя сажать ранее, чем спустя 3 секунд(ы) после вашего прилёта или прилёта пользователя на планету. Также нельзя сажать чаще, чем раз в 3 секунд(ы). За нарушение одного из этих правил вы не сможете сажать ещё 15 секунд.")!==-1||document.getElementById('sec4').innerHTML.indexOf("850 :Você poderá colocar na prisão dentro de 15 segundo(s).")!==-1||document.getElementById('sec4').innerHTML.indexOf("850 :You will be able to imprison in 15s.")!==-1||document.getElementById('sec4').innerHTML.indexOf("850 :Вы сможете сажать не ранее, чем через 15 секунд(ы).")!==-1||document.getElementById('sec4').innerHTML.indexOf("850 :A sua autoridade")!==-1||document.getElementById('sec').innerHTML.indexOf("850 :Ваш Авторитет позволяет")!==-1||document.getElementById('sec4').innerHTML.indexOf("850 :Your Authority")!==-1){
-                OfflineAndConnect();
-              }
-          }
-          if(autoescape.checked) {
-            if(snippets[0] === "900") {
-              let pln = snippets[1];
-              if(pln.slice(0, 6) === "Prison" || pln.slice(0, 6) === "Prisão") {
-                let escape = document.getElementById("escape");
-                escape.click();
-                let planet = document.getElementById("plntgo");
-                setTimeout(() => {
-                  planet.click();
-                }, 9500);
-              }
-            }if(snippets[1] === "PRISON" && snippets[2] === "0") {
-              let escape = document.getElementById("escape");
-              escape.click();
-              let planet = document.getElementById("plntgo");
-              setTimeout(() => {
-                planet.click();
-              }, 9500);
-            }
-          }
-          if(snippets[0] === "452" && snippets[1] === " :Você") {
-            document.getElementById("sec").innerHTML += "You can sign in to Galaxy in 10s"+ "\r\n";
-              btn1.click();
-            
-          }
-          if(snippets[0] === "950" && snippets[1] === " :Você"){
-            document.getElementById("sec").innerHTML += "Alguien entro desde otro dispositivo"+ "\r\n";
-            if (ws.readyState === WebSocket.OPEN) {
-          ws2.send("QUIT :ds\r\n");
-        } else {
-        }
-              btn1.click();
-          };
-          if(snippets[0]==="JOIN" && snippets[3] === id){
-            nick=":"+snippets[2].toString();
-          }
-          if(snippets[0]===nick){
-            let bai = event.data.toString();
-            let text1 = snippets[2];
-            for (let x = 0; x < membersarr1.length; ++x) {
-                if(parseInt(text1) === parseInt(membersarr1[x])){
-                let indexcheck = membersarr1.indexOf(membersarr1[x]);
-                let l = membersarr1[indexcheck -1];
-                document.getElementById("sec").style.color="#FF0000";
-                document.getElementById("sec").innerHTML += "kicks out "+l+" (Prison for "+snippets[9]+" "+snippets[10]+" "+snippets[11]+")"+"\r\n";
-                document.getElementById("sec2").innerHTML += "kicks out "+l+" (Prison for "+snippets[9]+" "+snippets[10]+" "+snippets[11]+")"+"\r\n";
-                document.getElementById("sec").scrollTop += 1000;
-                break;
-              }
-            }
-            if(copykick.checked == true){
-              let copyText = document.getElementById("sec4");
-              navigator.clipboard.writeText(copyText);
-            };
-          };
-          if (
-           snippets[0] === "JOIN" && snippets[3] === id
-          ) {
-            let number = event.data.toString().split("-1").join("");
-            let number3 = number.split("10101").join("");
-            let number1 = number3.split(" ").filter(Number);
-            let text = parseInt(number1[number1.length -1]);
-                if (1 == 1){
-                  var MOVE = Math.floor(Math.random() * document.getElementById("frente").value);
-                } else {
-                  variable1 = "";
-                }
-                if (1 == 1){
-                  var MOVE1 = Math.floor(Math.random() * -document.getElementById("atras").value);
-                } else {
-                  variable = "";
-                }
-            pos = text + MOVE;
-            posi = text + MOVE1;
-            pos1 = text + u;
-            posi1 = text + v;
-            document.getElementById("standing").innerHTML = text;
-          }
-          if (snippets[0] === "PING\r\n") {
-            if (ws.readyState === WebSocket.OPEN) {
-              ws2.send("PONG\r\n");
-            } else {}
-          }
-       };
-      });
       btn.addEventListener("click", () => {
         let N = 1;
-        let id;
         attkbase = document.getElementById("attack").value;
         defbase = document.getElementById("waiting").value;
         limit = document.getElementById("limit").value;
@@ -555,7 +96,7 @@ navigator.wakeLock;
         rc2 = document.getElementById("rc2").value;
         ws = new WebSocket("wss://cs.mobstudio.ru:6672");
         const parseHaaapsi = (e) => {
-          let temp = CryptoJS.MD5(e).toString(CryptoJS.enc.Hex);
+          var temp = CryptoJS.MD5(e).toString(CryptoJS.enc.Hex);
           return (temp = (temp = temp.split("").reverse().join("0")).substr(
             5,
             10
@@ -577,20 +118,20 @@ navigator.wakeLock;
           ws.send(":pt IDENT " + document.getElementById("devtype").value + " -2 4030 1 2 :GALA\r\n");
         };
         ws.onmessage = (event) => {
-          let text = event.data;
+          var text = event.data;
           var snippets = text.split(" ");
           if (snippets[0] === "HAAAPSI") {
             haaapsi = snippets[1];
             ws.send("RECOVER " + rc2 + "\r\n");
           }
           if (snippets[0] === "REGISTER") {
-            let temp = parseHaaapsi(haaapsi);
+            var temp = parseHaaapsi(haaapsi);
             id = snippets[1];
-            let password = snippets[2];
-            let username = snippets[3];
+            var password = snippets[2];
+            var username = snippets[3];
             useridg = id;
             passwordg = password;
-            let finalusername = username.split("\r\n");
+            var finalusername = username.split("\r\n");
             ws.send(
               "USER " +
                 id +
@@ -647,28 +188,15 @@ navigator.wakeLock;
                 }, 720);}
                 N--;}
               };
-              let black = document.getElementById("whitelist2").value.split("\n");
-              black.forEach((element) => {
-              if (membersarr.includes(element.toLowerCase())) {
-                let indexcheck = membersarr.indexOf(element.toLowerCase());
-                membersarr[indexcheck + 1] = "-";
-                membersarr[indexcheck - 1] = "-";
-              }
-            });
               whitelist = document.getElementById("whitelist").value.split("\n");
-              let useridset = new Set();
-              membersarr.forEach((element) => {
-  whitelist.forEach((element2) => {
-    if (element === element2) {
-      if (membersarr.includes(element2.toLowerCase())) {
-        var indexcheck = membersarr.indexOf(element2.toLowerCase());
-        // Agregar el valor al conjunto
-        useridset.add(membersarr[indexcheck + 2]);
-      }
-    }
-  });
-});
-               userids.push(Array.from(useridset));
+              for (let i = 0; i < membersarr.length; ++i) {
+                let elementoActual = membersarr[i];
+                let elementoSiguiente = membersarr[i + 2];
+                if (whitelist.includes(elementoActual) && elementoSiguiente > 6) {
+                  // Si el elemento actual está en listablanca, agregarlo y el siguiente a resultados
+                  userids.push(elementoSiguiente);
+                }
+              }
                if(userids.filter(Number).length != 0) {
                     //ws.send("test - " + membersarr[memberindex]);
                     if(Ran.checked == true){
@@ -682,7 +210,7 @@ navigator.wakeLock;
                     document.getElementById("sec").innerHTML += "Atk Found Enemy in "+timing+"ms"+"\r\n";
                     document.getElementById("sec").scrollTop += 1000;
                     defender = setTimeout(() => {
-                      new aprisionar(userid, userids.filter(Number).length !== 0, 1);
+                      new aprisionar(userid, userids.filter(Number).length !== 0);
                     }, timing);
                     if (timeshift.checked == true)vai = setTimeout(() => {
                       automatic(incrementAttack, decrementAttack);
@@ -697,20 +225,14 @@ navigator.wakeLock;
               membersarr1.push(...snip1);
               let ramdon4 = Math.floor(Math.random() * 2);
               let black = document.getElementById("whitelist2").value.split("\n");
-              black.forEach((element) => {
-              if (membersarr.includes(element.toLowerCase())) {
-                let indexcheck = membersarr.indexOf(element.toLowerCase());
-                membersarr[indexcheck + 1] = "-";
-                membersarr[indexcheck - 1] = "-";
+              for (let i = 0; i < snipfinal.length; ++i) {
+                let elementoActual = snipfinal[i];
+                let elementoSiguiente = snipfinal[i + 2];
+                if (whitelist.includes(elementoActual) && elementoSiguiente > 6) {
+                  // Si el elemento actual está en listablanca, agregarlo y el siguiente a resultados
+                  userids2.push(elementoSiguiente);
+                }
               }
-            });
-              whitelist.forEach((element) => {
-              if (snipfinal.includes(element.toLowerCase())) {
-                let indexcheck = snipfinal.indexOf(element.toLowerCase());
-                useridarray2 = snipfinal[indexcheck + 2];
-              }
-            });
-            userids2.push(useridarray2);
               if(userids2.filter(Number).length !== 0) {
                 userid2 = userids2.filter(Number)[0];
                 let prueba = userids2.filter(Number)[0];
@@ -718,7 +240,7 @@ navigator.wakeLock;
                 document.getElementById("sec").innerHTML += "Def Found Enemy in "+timing+"ms"+"\r\n";
                 document.getElementById("sec").scrollTop += 1000;
                 defender = setTimeout(() => {
-                  new aprisionar(prueba, userids2.filter(Number).includes(prueba) === true, 1);
+                  new aprisionar(prueba, userids2.filter(Number).includes(prueba) === true);
                 }, timing);
               if (timeshift.checked == true)vai = setTimeout(() => {
                 automatic(incrementDefence, decrementDefence);
@@ -768,7 +290,8 @@ navigator.wakeLock;
             });
               let black = document.getElementById("whitelist2").value.split("\n");
               let black2 = document.getElementById("whitelist3").value.split("\n");
-              membersarr.forEach((element) => {
+              if(black2.length !== 0){
+                membersarr.forEach((element) => {
                 black2.forEach((element2) => {
                   if(element === element2){
                     if (membersarr.includes(element2.toLowerCase())) {
@@ -779,13 +302,15 @@ navigator.wakeLock;
                   }
                 })
             });
-              black.forEach((element) => {
+              }
+              if(black.length !== 0){
+                black.forEach((element) => {
               if (membersarr.includes(element.toLowerCase())) {
                 let indexcheck = membersarr.indexOf(element.toLowerCase());
                 membersarr[indexcheck + 1] = "-";
               }
             });
-
+              }
                let integers = membersarr.filter(Number);
                userids.push(...integers.filter((element) => element.length >= 6));
                if(userids.filter(Number).length != 0) {
@@ -801,7 +326,7 @@ navigator.wakeLock;
                     document.getElementById("sec").innerHTML += "Found Enemy in "+timing+"ms"+"\r\n";
                     document.getElementById("sec").scrollTop += 1000;
                     defender = setTimeout(() => {
-                      new aprisionar(userid, userids.filter(Number).length != 0, 1);
+                      new aprisionar(userid, userids.filter(Number).length != 0);
                     }, timing);
                     if (timeshift.checked == true)vai = setTimeout(() => {
                       automatic(incrementAttack, decrementAttack);
@@ -848,7 +373,7 @@ navigator.wakeLock;
             document.getElementById("sec").innerHTML += "Found Enemy in "+timing+"ms"+"\r\n";
             document.getElementById("sec").scrollTop += 1000;
             defender = setTimeout(() => {
-              new aprisionar(prueba, userids2.filter(Number).includes(prueba) === true, 1);
+              new aprisionar(prueba, userids2.filter(Number).includes(prueba) === true);
               }, timing);
               if (timeshift.checked == true)vai = setTimeout(() => {
                 automatic(incrementDefence, decrementDefence);
@@ -875,7 +400,7 @@ navigator.wakeLock;
             king = id3king.filter(Number);
           }
           if (snippets[0] === "JOIN") {
-            let text;
+            var text;
             text = snippets[2];
 			useridtext = snippets[3];
       if(timing == undefined || timing == "undefined"){
@@ -991,7 +516,7 @@ navigator.wakeLock;
                 let indexcheck = userids.indexOf(userids[x]);
                 userids[indexcheck] = "";
                if(Ran.checked == true){
-                  userid = userids[Math.floor(Math.random() * userids.filter(Number).length)];
+                  userid = userids[Math.floor(Math.random() * userids.filter(Number).length)]+"\r\n";
                 }
                 else if(reverse.checked == true){
                   userid = userids.filter(Number)[userids.length - 1];
@@ -1107,18 +632,10 @@ navigator.wakeLock;
       
       document.getElementById("plntgo").addEventListener("click", () => {
         ws.send("JOIN " + document.getElementById("planet").value + "\r\n");
-        ws2.send("JOIN " + document.getElementById("planet").value + "\r\n");
       });
-      let reset2 = function () {
-        membersarr1=[], N = 1;
-        useridarray2=[], membersarr2=[], userids4=[],userids3=[];
-        document.getElementById("sec").innerHTML = "";
-        document.getElementById("sec").style.color="#00ffff";
-        document.getElementById("sec4").innerHTML="";
-      }
       let reset = function () {
         membersarr1=[], N = 1;
-        membersarr=[],userid=[],listadef=[],userids=[],userids2=[],userid2=[];
+        membersarr=[],userid=[],listadef=[],userids=[],userids2=[],userid2=[],useridarray=[],useridarray2=[];
         document.getElementById("sec").innerHTML = "";
         document.getElementById("sec").style.color="#00ffff";
         document.getElementById("sec4").innerHTML="";
@@ -1128,7 +645,6 @@ navigator.wakeLock;
         .addEventListener("click", () => {
           if (ws.readyState === WebSocket.OPEN) {
           ws.send("QUIT :ds\r\n");
-          ws2.send("QUIT :ds\r\n");
         } else {
         }
           clearTimeout(recodef);
@@ -1169,26 +685,26 @@ navigator.wakeLock;
           );
         }
       });
-      let aprisionar = function (id, users, t) {
+      let aprisionar = function (id, users) {
         if(users){
-          if (ws.readyState === WebSocket.OPEN || ws2.readyState === WebSocket.OPEN) {
-            if(t === 1) ws.send("ACTION 3 " +id+ "\r\n");
-            if(t === 2) ws2.send("ACTION 3 " +id+ "\r\n");
-          if(secs.checked == false) OfflineAndConnect(t);
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.send("ACTION 3 " +id+ "\r\n");
+          if(secs.checked == false) OfflineAndConnect();
         } else {}
         }else{
           
         }
       }
-      let OfflineAndConnect = function (k) {
-        if (ws.readyState === WebSocket.OPEN || ws2.readyState === WebSocket.OPEN) {
-          if(k === 1) ws.send("QUIT :ds\r\n"), reset();
-          if(k === 2) ws2.send("QUIT :ds\r\n"), reset2();;
+      let OfflineAndConnect = function () {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send("QUIT :ds\r\n");
+        clearTimeout(defender);
         } else {
         }
+        reset();
         document.getElementById("sec").innerHTML += "Offline"+ "\r\n";
         document.getElementById("sec").scrollTop += 1000;
-        Reconexion(k);
+        Reconexion();
       }
       let automatic = function (subir, bajar) {
           if (document.getElementById('sec4').innerHTML.indexOf("850 :Você somente pode colocar na prisão após 3 segundo(s) depois de aparecer no planeta. Também não se pode colocar na prisão mais de uma vez a cada 3 segundo(s). Se você violar uma destas regras, você não poderá colocar na prisão por 15 segundo(s).") !==-1|| document.getElementById('sec4').innerHTML.indexOf("850 :You can imprison only in 3s after you appear on Planet. You cant imprison more often than once in 3s. If you violate one of these rules, you wont be able to imprison users during 15s.") !==-1|| document.getElementById('sec').innerHTML.indexOf("850 :Нельзя сажать ранее, чем спустя 3 секунд(ы) после вашего прилёта или прилёта пользователя на планету. Также нельзя сажать чаще, чем раз в 3 секунд(ы). За нарушение одного из этих правил вы не сможете сажать ещё 15 секунд.")!==-1||document.getElementById('sec').innerHTML.indexOf("850 :You will be able to imprison in 15s.")!==-1||document.getElementById('sec').innerHTML.indexOf("850 :Вы сможете сажать не ранее, чем через 15 секунд(ы).")!==-1){
@@ -1277,3 +793,4 @@ navigator.wakeLock;
 
       GetClock();
       setInterval(GetClock, 1000);
+   
