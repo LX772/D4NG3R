@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guardar IP y Dirección de Google Maps</title>
+</head>
+<body>
+    <h1>Bienvenido</h1>
+    <p>Tu IP y tu ubicación han sido guardadas.</p>
+
+    <?php
+    // Obtener la IP del usuario
+    $ip = $_SERVER['REMOTE_ADDR'];
+
+    // Usar un servicio de geolocalización (por ejemplo, ipinfo.io)
+    $geolocationUrl = "http://ipinfo.io/{$ip}/json";
+    $geoData = file_get_contents($geolocationUrl);
+    $geoData = json_decode($geoData);
+
+    // Obtener las coordenadas de latitud y longitud
+    if (isset($geoData->loc)) {
+        list($latitude, $longitude) = explode(',', $geoData->loc);
+
+        // Crear el enlace de Google Maps
+        $googleMapsUrl = "https://www.google.com/maps?q={$latitude},{$longitude}";
+
+        // Crear la información a guardar
+        $info = "IP: $ip\nGoogle Maps: $googleMapsUrl\n\n";
+
+        // Guardar la información en un archivo de texto
+        file_put_contents('info.txt', $info, FILE_APPEND);
+
+        echo "<p>Tu IP es: $ip</p>";
+        echo "<p>Ver tu ubicación en <a href='$googleMapsUrl' target='_blank'>Google Maps</a></p>";
+    } else {
+        echo "<p>No se pudo determinar tu ubicación.</p>";
+    }
+    ?>
+</body>
+</html>
