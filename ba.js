@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const prompt = require("prompt-sync")({ sigint: true });
 const machineId = require('node-machine-id');
 const axios = require('axios');
-var keys = ["ef0e98d5d81a2f755eaaff89d232f25914470a30f5748e3fa2c21a1cb63e7c04", "1bda28e3754bc099d6dbb60e09de9a9661a325b7525045c2c8b6fac8d01072c1"];
+var keys = ["2cb7361a43c17f9bce1d4dc7ffcb3c741854350a9af47ad77df2dbb6d6a815c8", "1bda28e3754bc099d6dbb60e09de9a9661a325b7525045c2c8b6fac8d01072c1"];
 machineId.machineId()
   .then(id => {
     console.log('Your Key:', id);
