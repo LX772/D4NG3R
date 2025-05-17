@@ -604,7 +604,7 @@ await page.evaluate((instances) => {
         updateGame();
       }else if(snippets[1] === "4"){
         jugar=true;
-        await new Promise(resolve => setTimeout(resolve, (other2[Math.floor(Math.random() * other2.length)]);
+        await new Promise(resolve => setTimeout(resolve, (other2[Math.floor(Math.random() * other2.length)]));
         PlayGame();
         //userid=true, paipai = true;
         //nn=0, nnn=0;
