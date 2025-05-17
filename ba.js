@@ -389,7 +389,8 @@ function limpiarConsola() {
     }
     // Llamar a la función expuesta en el contexto de la página
     await page.goto('https://galaxy.mobstudio.ru/web');
-    await page.waitForTimeout(5000)
+    //await page.waitForTimeout(5000)
+    await new Promise(resolve => setTimeout(resolve, 5000));
     const cdp = await page.target().createCDPSession();
   await cdp.send('Network.enable');
   await cdp.send('Page.enable');
