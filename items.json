@@ -1,0 +1,8 @@
+{
+  "llaves": [
+    { "id": 1, "nombre": "Diamond Lockpick", "precio": 0.15, "cantidad": 200, "imagen": "https://galaxy.mobstudio.ru/services/public/img/prize_icons/diamond_lockpick_200.png" }
+  ],
+  "servicios": [
+    { "id": 2, "nombre": "Servicio Premium", "precio": 1.50, "cantidad": 10, "imagen": "https://via.placeholder.com/100" }
+  ]
+}
