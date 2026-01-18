@@ -1,0 +1,2187 @@
+// ============================================
+// GALAXY BOT - VERSION 2.2 ENHANCED
+// By D4NG3R - Con Auto-Reconexión y Automatic
+// ============================================
+
+(function() {
+  'use strict';
+  
+  let ws = null;
+  let test = [];
+  let testt = [];
+  let timeouts = [];
+  let userId = "";
+  let username = "";
+  let whitelist = [];
+  let userid;
+  let whitelistNicks = [];
+  let allData = [];
+  let myPosition = null;
+  let currentSelectedTarget = null;
+  let currentSelectedType = null;
+  let reconnectTimeout = null;
+  let data = false; // Para modo Automatic (ajuste de delays)
+  let isReconnecting = false;
+  // Agregar estas variables globales al inicio del script (después de las otras variables)
+let attkbase = 1920;
+let defbase = 1910;
+let limit = 1900;    // Límite mínimo defend
+let limit2 = 1910;   // Límite mínimo attack
+let limit3 = 2100;   // Límite máximo defend
+let limit4 = 2100;   // Límite máximo attack
+
+// Función para aplicar límites
+// Actualizar la función applyLimits para que tenga mejor logging:
+function detectLangFromText() {
+  const text = document.body.innerText.toLowerCase();
+
+  if (text.includes("english")) return "en";
+  if (text.includes("português") || text.includes("portuguese")) return "pt";
+  if (text.includes("español") || text.includes("spanish")) return "es";
+  if (text.includes("русский") || text.includes("russian")) return "ru";
+
+  return "unknown";
+}
+let lang = detectLangFromText();
+const applyLimits = () => {
+  let limitsApplied = false;
+  
+  if (defbase <= limit){
+    config.defendDelay = limit;
+    document.getElementById("galaxy-bot-defend-delay").value = limit;
+    if (!limitsApplied) {
+      addLog(`🛡️ Defend: Límite mínimo aplicado (${limit}ms)`, 'info');
+      limitsApplied = true;
+    }
+  }
+  if (attkbase <= limit2){
+    config.attackDelay = limit2;
+    document.getElementById("galaxy-bot-attack-delay").value = limit2;
+    if (!limitsApplied) {
+      addLog(`⚔️ Attack: Límite mínimo aplicado (${limit2}ms)`, 'info');
+      limitsApplied = true;
+    }
+  }
+  if (defbase >= limit3){
+    config.defendDelay = limit3;
+    document.getElementById("galaxy-bot-defend-delay").value = limit3;
+    if (!limitsApplied) {
+      addLog(`🛡️ Defend: Límite máximo aplicado (${limit3}ms)`, 'info');
+      limitsApplied = true;
+    }
+  }
+  if (attkbase >= limit4){
+    config.attackDelay = limit4;
+    document.getElementById("galaxy-bot-attack-delay").value = limit4;
+    if (!limitsApplied) {
+      addLog(`⚔️ Attack: Límite máximo aplicado (${limit4}ms)`, 'info');
+      limitsApplied = true;
+    }
+  }
+  
+  // Actualizar valores base
+  attkbase = parseInt(document.getElementById("galaxy-bot-attack-delay").value);
+  defbase = parseInt(document.getElementById("galaxy-bot-defend-delay").value);
+  
+  saveConfig();
+};
+  // Cargar configuración desde localStorage
+const loadConfig = () => {
+  try {
+    const saved = localStorage.getItem('galaxy-bot-config');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return {
+        attackDelay: parsed.attackDelay || 1920,
+        defendDelay: parsed.defendDelay || 1910,
+        mode: parsed.mode || 'lowsec',
+        randomTarget: parsed.randomTarget !== undefined ? parsed.randomTarget : true,
+        reverseTarget: parsed.reverseTarget || false,
+        diabloV2Enabled: parsed.diabloV2Enabled !== undefined ? parsed.diabloV2Enabled : true,
+        wallhackEnabled: parsed.wallhackEnabled !== undefined ? parsed.wallhackEnabled : true,
+        autoSelectEnabled: parsed.autoSelectEnabled !== undefined ? parsed.autoSelectEnabled : true,
+        automaticEnabled: parsed.automaticEnabled !== undefined ? parsed.automaticEnabled : true,
+        autoReconnect: parsed.autoReconnect !== undefined ? parsed.autoReconnect : true,
+        reconnectDelay: parsed.reconnectDelay || 1000,
+        deviceType: parsed.deviceType || '350',
+        rc: parsed.rc || '',
+        whitelist: parsed.whitelist || [],
+        whitelistNicks: parsed.whitelistNicks || [],
+        incrementValue: parsed.incrementValue || 2,
+        decrementValue: parsed.decrementValue || 3,
+        limitDefendMin: parsed.limitDefendMin || 1900,
+        limitDefendMax: parsed.limitDefendMax || 2100,
+        limitAttackMin: parsed.limitAttackMin || 1910,
+        limitAttackMax: parsed.limitAttackMax || 2100
+      };
+    }
+  } catch (e) {
+    console.error('Error loading config:', e);
+  }
+  return {
+    attackDelay: 1920,
+    defendDelay: 1910,
+    mode: 'lowsec',
+    randomTarget: true,
+    reverseTarget: false,
+    diabloV2Enabled: true,
+    wallhackEnabled: true,
+    autoSelectEnabled: true,
+    automaticEnabled: true,
+    autoReconnect: true,
+    reconnectDelay: 1000,
+    deviceType: '350',
+    rc: '',
+    whitelist: [],
+    whitelistNicks: [],
+    incrementValue: 2,
+    decrementValue: 3,
+    limitDefendMin: 1900,
+    limitDefendMax: 2100,
+    limitAttackMin: 1910,
+    limitAttackMax: 2100
+  };
+};
+
+// Actualizar la función saveConfig
+const saveConfig = () => {
+  try {
+    localStorage.setItem('galaxy-bot-config', JSON.stringify({
+      attackDelay: config.attackDelay,
+      defendDelay: config.defendDelay,
+      mode: config.mode,
+      randomTarget: config.randomTarget,
+      reverseTarget: config.reverseTarget,
+      diabloV2Enabled: config.diabloV2Enabled,
+      wallhackEnabled: config.wallhackEnabled,
+      autoSelectEnabled: config.autoSelectEnabled,
+      automaticEnabled: config.automaticEnabled,
+      autoReconnect: config.autoReconnect,
+      reconnectDelay: config.reconnectDelay,
+      deviceType: config.deviceType,
+      rc: config.rc,
+      whitelist: whitelist,
+      whitelistNicks: whitelistNicks,
+      incrementValue: config.incrementValue,
+      decrementValue: config.decrementValue,
+      limitDefendMin: limit,
+      limitDefendMax: limit3,
+      limitAttackMin: limit2,
+      limitAttackMax: limit4
+    }));
+  } catch (e) {
+    console.error('Error saving config:', e);
+  }
+};
+  
+  let config = loadConfig();
+  let verificador = function(data, ai) {
+    for (let x = 0; x < data.length; ++x) {
+      if(ai === data[x].id) return true;
+    }
+    return false;
+  };
+
+  let GetNick = function(allData, id) {
+    for (let x = 0; x < allData.length; x++) {
+      if(allData[x].id === id) return allData[x].nick;
+    }
+    return "Unknown";
+  };
+
+  let order = function (posi, data) {
+    for (let x = 0; x < data.length; x++) {
+      if(data[x].posicion === posi) return true;
+    }
+  };
+
+  let reset = function() {
+    test = [];
+    testt = [];
+    currentSelectedTarget = null;
+    currentSelectedType = null;
+    for (let timeout of timeouts) clearTimeout(timeout);
+    timeouts = [];
+    updateStats();
+    addLog('🔄 Enemigos limpiados', 'info');
+  };
+
+  const fullReset = () => {
+    test = [];
+    testt = [];
+    myPosition = null;
+    currentSelectedTarget = null;
+    currentSelectedType = null;
+    for (let timeout of timeouts) clearTimeout(timeout);
+    timeouts = [];
+    updateStats();
+    const canvas = document.getElementById('galaxy-wallhack-canvas');
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    addLog('🔄 Reset completo', 'info');
+  };
+
+  const addLog = (message, type = 'info') => {
+    const logsDiv = document.getElementById('galaxy-bot-logs');
+    if (!logsDiv) return;
+    
+    const time = new Date().toLocaleTimeString();
+    const colors = {
+      success: '#4ade80', error: '#f87171', attack: '#fb923c',
+      defend: '#60a5fa', info: '#94a3b8', wallhack: '#a78bfa', select: '#fbbf24'
+    };
+    
+    const logEntry = document.createElement('div');
+    logEntry.style.cssText = `color: ${colors[type] || colors.info}; font-size: 12px; margin-bottom: 2px;`;
+    logEntry.textContent = `[${time}] ${message}`;
+    logsDiv.appendChild(logEntry);
+    logsDiv.scrollTop = logsDiv.scrollHeight;
+    
+    if (logsDiv.children.length > 100) logsDiv.removeChild(logsDiv.children[0]);
+  };
+
+  // Buscar la función updateStats y reemplazarla por esta versión mejorada:
+
+const updateStats = () => {
+  // Limpiar duplicados en allData antes de contar
+  const uniqueUsers = [];
+  const seenIds = new Set();
+  
+  allData.forEach(user => {
+    if (user && user.id && !seenIds.has(user.id)) {
+      seenIds.add(user.id);
+      uniqueUsers.push(user);
+    }
+  });
+  
+  // Reemplazar allData con la versión sin duplicados
+  allData = uniqueUsers;
+  
+  const attackCount = document.getElementById('galaxy-bot-attack-count');
+  const defendCount = document.getElementById('galaxy-bot-defend-count');
+  const usersCount = document.getElementById('galaxy-bot-users-count');
+  
+  if (attackCount) attackCount.textContent = test.length;
+  if (defendCount) defendCount.textContent = testt.length;
+  if (usersCount) usersCount.textContent = allData.length;
+};
+// Agregar esta función después de updateStats:
+
+const cleanupDuplicates = () => {
+  // Limpiar duplicados en test
+  const uniqueTest = [];
+  const seenTestIds = new Set();
+  test.forEach(item => {
+    if (item && item.id && !seenTestIds.has(item.id)) {
+      seenTestIds.add(item.id);
+      uniqueTest.push(item);
+    }
+  });
+  test = uniqueTest;
+  
+  // Limpiar duplicados en testt
+  const uniqueTestt = [];
+  const seenTesttIds = new Set();
+  testt.forEach(item => {
+    if (item && item.id && !seenTesttIds.has(item.id)) {
+      seenTesttIds.add(item.id);
+      uniqueTestt.push(item);
+    }
+  });
+  testt = uniqueTestt;
+  
+  updateStats();
+};
+
+// Ejecutar limpieza cada 5 segundos
+setInterval(cleanupDuplicates, 5000);
+
+  // Obtener el nombre actualmente seleccionado en la UI
+  const getSelectedName = () => {
+    try {
+      const nameElement = document.querySelector("#root > div > div.auth-user > div.app-content.mdc-drawer-app-content > div.channel > div.planet-bar > div > div.planet-bar__item-name > div");
+      return nameElement ? nameElement.textContent.trim().toLowerCase() : null;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  // Seleccionar con verificación
+  const selectTargetInUI = (targetId, type) => {
+    if (!config.autoSelectEnabled) return Promise.resolve(false);
+    
+    return new Promise((resolve) => {
+      try {
+        const targetData = allData.find(u => u.id === targetId);
+        if (!targetData || !targetData.posicion || myPosition === null) {
+          resolve(false);
+          return;
+        }
+        
+        const targetPos = parseInt(targetData.posicion);
+        const targetNick = targetData.nick.toLowerCase();
+        const isMovingRight = targetPos > myPosition;
+        
+        const leftButton = document.querySelector("#root > div > div.auth-user > div.app-content.mdc-drawer-app-content > div.channel > div.planet-bar > div > div.mdc-icon-button.planet-bar__button.planet-bar__button__select-item.planet-bar__button__select-item--left");
+        const rightButton = document.querySelector("#root > div > div.auth-user > div.app-content.mdc-drawer-app-content > div.channel > div.planet-bar > div > div.mdc-icon-button.planet-bar__button.planet-bar__button__select-item.planet-bar__button__select-item--right");
+        
+        const button = isMovingRight ? rightButton : leftButton;
+        if (!button) {
+          addLog(`❌ Botón no encontrado`, 'error');
+          resolve(false);
+          return;
+        }
+        
+        const distance = Math.abs(targetPos - myPosition);
+        const direction = isMovingRight ? "→" : "←";
+        addLog(`🎯 ${targetData.nick} [${targetPos}] (${distance} ${direction})`, 'select');
+        
+        let clickCount = 0;
+        
+        const clickInterval = setInterval(() => {
+          const currentSelected = getSelectedName();
+          
+          if (currentSelected === targetNick) {
+            clearInterval(clickInterval);
+            currentSelectedTarget = targetId;
+            currentSelectedType = type;
+            addLog(`✓ ${targetData.nick} - SELECCIONADO`, 'select');
+            resolve(true);
+            return;
+          }
+          
+          if (clickCount >= distance + 10) {
+            clearInterval(clickInterval);
+            addLog(`⚠️ ${targetData.nick} - Timeout`, 'error');
+            resolve(false);
+            return;
+          }
+          
+          button.click();
+          clickCount++;
+          
+          if (clickCount % 5 === 0) {
+            const check = getSelectedName();
+            if (check === targetNick) {
+              clearInterval(clickInterval);
+              currentSelectedTarget = targetId;
+              currentSelectedType = type;
+              addLog(`✓ ${targetData.nick} - SELECCIONADO`, 'select');
+              resolve(true);
+              return;
+            }
+          }
+        }, 50);
+        
+      } catch (error) {
+        addLog(`❌ Error: ${error.message}`, 'error');
+        resolve(false);
+      }
+    });
+  };
+
+  // Funciones Automatic (ajuste automático de delays)
+  // Actualizar la función incrementAttack
+const incrementAttack = () => {
+  let value = parseInt(config.attackDelay);
+  value = isNaN(value) ? 1920 : value + config.incrementValue;
+  
+  // Aplicar límite máximo
+  if (value >= limit4) {
+    value = limit4;
+    addLog(`⚠️ Attack alcanzó límite máximo: ${limit4}ms`, 'error');
+  }
+  
+  config.attackDelay = value;
+  attkbase = value;
+  const input = document.getElementById('galaxy-bot-attack-delay');
+  if (input) input.value = value;
+  saveConfig();
+  addLog(`⬆️ Attack +${config.incrementValue}ms → ${value}ms`, 'info');
+};
+
+const decrementAttack = () => {
+  let value = parseInt(config.attackDelay);
+  value = isNaN(value) ? 1920 : value - config.decrementValue;
+  
+  // Aplicar límite mínimo
+  if (value <= limit2) {
+    value = limit2;
+    addLog(`⚠️ Attack alcanzó límite mínimo: ${limit2}ms`, 'error');
+  }
+  
+  config.attackDelay = value;
+  attkbase = value;
+  const input = document.getElementById('galaxy-bot-attack-delay');
+  if (input) input.value = value;
+  saveConfig();
+  addLog(`⬇️ Attack -${config.decrementValue}ms → ${value}ms`, 'info');
+};
+
+const incrementDefence = () => {
+  let value = parseInt(config.defendDelay);
+  value = isNaN(value) ? 1910 : value + config.incrementValue;
+  
+  // Aplicar límite máximo
+  if (value >= limit3) {
+    value = limit3;
+    addLog(`⚠️ Defend alcanzó límite máximo: ${limit3}ms`, 'error');
+  }
+  
+  config.defendDelay = value;
+  defbase = value;
+  const input = document.getElementById('galaxy-bot-defend-delay');
+  if (input) input.value = value;
+  saveConfig();
+  addLog(`⬆️ Defend +${config.incrementValue}ms → ${value}ms`, 'info');
+};
+
+const decrementDefence = () => {
+  let value = parseInt(config.defendDelay);
+  value = isNaN(value) ? 1910 : value - config.decrementValue;
+  
+  // Aplicar límite mínimo
+  if (value <= limit) {
+    value = limit;
+    addLog(`⚠️ Defend alcanzó límite mínimo: ${limit}ms`, 'error');
+  }
+  
+  config.defendDelay = value;
+  defbase = value;
+  const input = document.getElementById('galaxy-bot-defend-delay');
+  if (input) input.value = value;
+  saveConfig();
+  addLog(`⬇️ Defend -${config.decrementValue}ms → ${value}ms`, 'info');
+};
+
+  // Buscar la función automatic y reemplazarla por esta versión mejorada:
+
+const automatic = (value) => {
+  if (!config.automaticEnabled) return;
+  
+  try {
+    if (data === true) {
+      // Error 850 detectado - incrementar delays
+      if (value === "DEFEND") {
+        incrementDefence();
+        addLog(`🔧 Automatic: Defend aumentado a ${config.defendDelay}ms`, 'error');
+      }
+      if (value === "ATTACK") {
+        incrementAttack();
+        addLog(`🔧 Automatic: Attack aumentado a ${config.attackDelay}ms`, 'error');
+      }
+    }
+    if (data === false) {
+      // Sin errores - decrementar delays (optimizar)
+      if (value === "DEFEND") {
+        decrementDefence();
+        addLog(`🔧 Automatic: Defend optimizado a ${config.defendDelay}ms`, 'success');
+      }
+      if (value === "ATTACK") {
+        decrementAttack();
+        addLog(`🔧 Automatic: Attack optimizado a ${config.attackDelay}ms`, 'success');
+      }
+    }
+    
+    // Asegurar que se apliquen los límites después de cualquier cambio
+    applyLimits();
+    
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+  // Reconexión automática
+  const reconnect = () => {
+    if (!config.autoReconnect || isReconnecting) return;
+    
+    isReconnecting = true;
+    
+    if (reconnectTimeout) clearTimeout(reconnectTimeout);
+    
+    reconnectTimeout = setTimeout(() => {
+      addLog('🔄 Intentando reconectar...', 'info');
+      const loginButton = document.querySelector("#root > div > div.un-auth-user > div.start.start--has-users > div.start__users.scroll > a");
+      if (loginButton) {
+        loginButton.click();
+        addLog('✅ Click en reconexión', 'success');
+        setTimeout(() => {
+          isReconnecting = false;
+        }, 3000);
+      } else {
+        addLog('❌ Botón de login no encontrado', 'error');
+        isReconnecting = false;
+      }
+    }, config.reconnectDelay);
+  };
+
+  // Función Aprisionar
+  let aprisionar = function (id, users, value, dataArray) {
+    try {
+      if(!ws || ws.readyState !== 1) {
+        addLog(`❌ Network no disponible`, 'error');
+        return;
+      }
+      
+      if(users){
+        // Seleccionar en paralelo (no bloqueante)
+        if (config.autoSelectEnabled) {
+          selectTargetInUI(id, value.toLowerCase()).catch(err => {
+            addLog(`⚠️ Error selección: ${err.message}`, 'error');
+          });
+        }
+        
+        // ENVIAR INMEDIATAMENTE
+        ws.send("ACTION 3 " + id + "\r\n");
+        ws.send("QUIT : ds\r\n");
+        addLog(`✓ ${value} → ${GetNick(allData, id)}`, 'success');
+        
+        // Modo Automatic: ajustar delays basado en error 850
+        if (config.automaticEnabled) {
+          automatic(value);
+        }
+        
+        reset();
+      }
+    } catch (error) {
+      addLog(`❌ ${error.message}`, 'error');
+    }
+  };
+  // INTERCEPTOR DE WEBSOCKET
+  const originalWebSocket = window.WebSocket;
+  window.WebSocket = function(url, protocols) {
+    ws = new originalWebSocket(url, protocols);
+    const originalSend = ws.send;
+    
+    ws.send = function(dataToSend) {
+      if (typeof dataToSend === "string" && dataToSend.startsWith("REMOVE")) {
+        let parts = dataToSend.split(" ");
+        if (parts.length === 2) {
+          let newPos = parseInt(parts[1]);
+          if (!isNaN(newPos)) {
+            myPosition = newPos;
+            addLog(`📍 Movido: ${newPos}`, 'wallhack');
+            for (let i = 0; i < allData.length; i++) {
+              if (allData[i].id === userId) {
+                allData[i].posicion = newPos.toString();
+                break;
+              }
+            }
+          }
+        }
+      } else if (dataToSend.startsWith("USER")) {
+        let text = dataToSend;
+        if (typeof text !== 'string') return;
+        let snippets = text.split(" ");
+        userId = snippets[1];
+        let usernameRaw = snippets[3];
+        username = usernameRaw.split("\r\n").toString().split(",").join("");
+        addLog(`👤 ${username} [${userId}]`, 'info');
+      }
+      return originalSend.apply(this, arguments);
+    };
+    
+    addLog('🌐 Network interceptado', 'success');
+
+    ws.addEventListener('open', () => {
+      addLog('🔌 Conectado', 'success');
+      
+      // Si el device type es Web (352), NO enviar IDENT
+      if (config.deviceType !== '352') {
+        ws.send(":"+lang+" IDENT " + config.deviceType + " -2 4030 1 2 :GALA\r\n");
+        addLog(`📱 Device: ${config.deviceType === '350' ? 'Android' : 'iOS'}`, 'info');
+      } else {
+        addLog(`🌐 Device: Web (sin IDENT)`, 'info');
+      }
+      
+      allData = [];
+      isReconnecting = false;
+    });
+    
+    ws.addEventListener('close', () => {
+      addLog('❌ Network cerrado', 'error');
+      fullReset();
+      reconnect();
+    });
+
+    ws.addEventListener('message', (event) => {
+      const text = event.data;
+      if (typeof text !== 'string') return;
+      const snippets = text.split(" ");
+      
+      if (snippets[0] === "REGISTER") {
+        userId = snippets[1];
+        let usernameRaw = snippets[3];
+        username = usernameRaw.split("\r\n").toString().split(",").join("");
+        addLog(`👤 ${username} [${userId}]`, 'info');
+      }
+      
+      if (snippets[0] == "900") {
+        let pln = snippets[1];
+        if(pln.slice(0, 6) === "Prison" || pln.slice(0, 6) === "Prisão") {
+          addLog('🔒 Prisión detectada', 'error');
+          fullReset();
+        } else {
+          addLog(`🌍 Planeta: ${snippets[1]}`, 'info');
+        }
+      }// DETECTAR POSICIÓN INICIAL
+      if (snippets[0] === "JOIN" && snippets[3] === userId) {
+        let number = event.data.toString().split("-1").join("").split("10101").join("");
+        let number1 = number.split(" ").filter(Number);
+        let text = parseInt(number1[number1.length - 1]);
+        myPosition = text;
+        addLog(`📍 Posición inicial: ${myPosition}`, 'wallhack');
+        
+        for (let i = 0; i < allData.length; i++) {
+          if (allData[i].id === userId) {
+            allData[i].posicion = text.toString();
+            break;
+          }
+        }
+      }
+
+      // ACTUALIZAR TU POSICIÓN CUANDO TE MUEVES
+      if (snippets[0] === "REMOVE" && snippets[1] === userId) {
+        const newPos = parseInt(snippets[2].toString().split("\r\n").join(""));
+        if (!isNaN(newPos)) {
+          myPosition = newPos;
+          addLog(`📍 Nueva posición: ${newPos}`, 'wallhack');
+          
+          for (let i = 0; i < allData.length; i++) {
+            if (allData[i].id === userId) {
+              allData[i].posicion = newPos.toString();
+              break;
+            }
+          }
+        }
+      }
+      
+      // ACTUALIZAR POSICIONES DE OTROS USUARIOS
+      // Buscar el bloque "ACTUALIZAR POSICIONES DE OTROS USUARIOS"
+// y reemplazarlo por esta versión mejorada:
+
+// ACTUALIZAR POSICIONES DE OTROS USUARIOS
+if (snippets[0] === "REMOVE" && snippets[1] && snippets[1] !== userId){
+  const targetId = snippets[1];
+  const newPos = snippets[2] ? snippets[2].toString().split("\r\n").join("") : null;
+  
+  if (newPos && !isNaN(parseInt(newPos))) {
+    let userFound = false;
+    for (let x = 0; x < allData.length; x++) {
+      if(allData[x].id === targetId){
+        allData[x].posicion = newPos;
+        userFound = true;
+        break;
+      }
+    }
+    
+    if (!userFound) {
+      // Si el usuario no está en allData, podría ser un nuevo usuario moviéndose
+      // No hacer nada por ahora, esperaremos a que aparezca en 353 o JOIN
+    }
+  }
+}
+
+      // ACTUALIZAR AUTORIDAD
+      if(snippets[0] === "860"){
+        let dataMsg = event.data.split(" ");
+        for (let x = 0; x < dataMsg.length; x++) {
+          if(dataMsg[x].length === 8 && verificador(allData, dataMsg[x])){
+            for (let d = 0; d < allData.length; d++) {
+              if(allData[d].id === dataMsg[x]) allData[d].autority = dataMsg[x+1];
+            }
+          }
+        }
+      }
+
+      // DETECTAR OPERADORES
+      if(event.data.includes("OP")){
+        for (let d = 0; d < allData.length; d++) {
+          if(allData[d].id === snippets[1].toString().split("\r\n").join("")) allData[d].superUser = "+";
+        }
+      }
+
+      // PROCESAR LISTA DE USUARIOS (353)
+      if (snippets[0] == "353") {
+        let dump = event.data.replace(/353|-3|-2|@|:|\+/g, "");
+        let members = dump.split(": ").join("");
+        let h = members.split(" ");
+        let find = [];
+        for (let y = 2; y < h.length; y++) {
+          if (h[y-2].startsWith("@") && /^\d+$/.test(h[y])) {
+            if(y-2 < h.length) find.push(h[y-2]);
+            find.push(h[y-1].substring(1)); 
+            if (y + 1 < h.length) find.push(h[y]);      
+            find.push("@");   
+          } else if (h[y-1].startsWith("+") && /^\d+$/.test(h[y])) {
+            if(y-2 < h.length) find.push(h[y-2]);
+            find.push(h[y-1].substring(1));  
+            if (y + 1 < h.length) find.push(h[y]);       
+            find.push("+");                     
+          } else if (!h[y-1].startsWith("+") && /^\d+$/.test(h[y])) {
+            if(y-2 < h.length) find.push(h[y-2]);
+            find.push(h[y-1]); 
+            if (y + 1 < h.length) find.push(h[y]);       
+            find.push(null);                      
+          } else if (!h[y-1].startsWith("@") && /^\d+$/.test(h[y])) {
+            if(y-2 < h.length) find.push(h[y-2]);
+            find.push(h[y-1]);  
+            if (y + 1 < h.length) find.push(h[y]);       
+            find.push(null);                      
+          }
+        }
+        
+        for (let x = 0; x < find.length; x++) {
+          let Clan = find[x - 2];
+          let Nick = find[x - 1];
+          let superSu = find[x+1];
+          let ID = find[x];
+          let posicion;
+          
+          for (let i = snippets.length - 1; i >= 1; i--) {
+            if(snippets[i] === "@"){
+              posicion = snippets[i+5];
+              
+              if(/^\d+$/.test(ID) && !verificador(allData, ID) && !order(posicion, allData) && userId != ID && ID.length >= 7) {
+                allData.push({nick: Nick, clan: Clan, superUser: superSu, id: ID, posicion: posicion});
+              }
+            }
+          }
+        }
+        updateStats();
+      }
+
+      // PROCESAR NUEVO USUARIO (JOIN)
+
+if (snippets[0] == "JOIN" && snippets[3] !== userId) {
+  let snipfinal = event.data.split(" ");
+  
+  // Extraer información del nuevo usuario
+  let newUserId = null;
+  let newUserNick = null;
+  let newUserClan = null;
+  let newUserPosition = null;
+  
+  for (let x = 0; x < snipfinal.length; x++) {
+    if (snipfinal[x] && /^\d+$/.test(snipfinal[x]) && snipfinal[x].length >= 7) {
+      newUserId = snipfinal[x];
+      newUserNick = snipfinal[x - 1] ? snipfinal[x - 1].replace(/^[@+]/, '') : 'Unknown';
+      newUserClan = snipfinal[x - 2] || '';
+      newUserPosition = snipfinal[snipfinal.length - 4];
+      break; // Solo procesar el primer ID válido
+    }
+  }
+  
+  // Validar y agregar solo si no existe
+  if (newUserId && newUserId !== userId && !verificador(allData, newUserId)) {
+    allData.push({
+      nick: newUserNick,
+      clan: newUserClan,
+      id: newUserId,
+      superUser: null,
+      posicion: newUserPosition
+    });
+    addLog(`👤 ${newUserNick} entró [${newUserPosition}]`, 'info');
+  }
+  
+  updateStats();
+}// ============================================
+      // MODO WHITELIST - ATTACK (353)
+      // ============================================
+      if (config.mode === 'whitelist') {
+        if (snippets[0] === "353") {
+          let dump = event.data.replace(/353|-3|-2|@|:|\+/g, "");
+          let find = dump.toLowerCase().split(" ");
+          let timing = parseInt(config.attackDelay);
+          let messageTimestamp = event.timeStamp;
+          let currentTime = performance.now();
+          let delay = Math.max(0, timing - (currentTime - messageTimestamp));
+          
+          for (let i = 0; i < find.length; i++) {
+            let clan = find[i - 2], nick = find[i - 1], id = find[i];
+            
+            if (id.length >= 7 && /^\d+$/.test(id) && 
+                whitelist.includes(clan) && !whitelistNicks.includes(nick) && !verificador(test, id)) {
+              
+              // Modo Diablo V2: usa el delay calculado desde timestamp
+              if (config.diabloV2Enabled) {
+                timing = delay;
+                addLog(`⚡ Diablo V2: ${nick} en ${delay}ms`, 'attack');
+              } else {
+                addLog(`⚔️ Attack: ${nick} en ${timing}ms`, 'attack');
+              }
+              
+              test.push({clan, nick, id});
+              updateStats();
+            }
+          }
+          
+          if(test.length !== 0) {
+            if(config.randomTarget) userid = test[Math.floor(Math.random() * test.length)].id;
+            else if(config.reverseTarget) userid = test[test.length - 1].id;
+            else userid = test[0].id;
+            
+            if(config.diabloV2Enabled && messageTimestamp) {
+              timeouts.push(setTimeout(() => {
+                if (userid && test.length !== 0) aprisionar(userid, true, "ATTACK", allData);
+              }, delay));
+            } else {
+              timeouts.push(setTimeout(() => {
+                if (userid && test.length !== 0) aprisionar(userid, true, "ATTACK", allData);
+              }, timing));
+            }
+          }
+        }
+        
+        // MODO WHITELIST - DEFEND (JOIN)
+        if (snippets[0] === "JOIN" && snippets[3] != userId) {
+          let timing = parseInt(config.defendDelay);
+          let messageTimestamp = event.timeStamp;
+          let currentTime = performance.now();
+          let delay = Math.max(0, timing - (currentTime - messageTimestamp));
+          let snipfinal = event.data.toLowerCase().split(" ");
+          let prueba;
+          
+          for (let i = 0; i < snipfinal.length; i++) {
+            let clan = snipfinal[i - 2], nick = snipfinal[i - 1], id = snipfinal[i];
+            
+            if (id.length >= 7 && /^\d+$/.test(id) && 
+                whitelist.includes(clan) && !whitelistNicks.includes(nick) && !verificador(testt, id)) {
+              
+              // Modo Diablo V2: usa el delay calculado desde timestamp
+              if (config.diabloV2Enabled) {
+                timing = delay;
+                addLog(`⚡ Diablo V2: ${nick} en ${delay}ms`, 'defend');
+              } else {
+                addLog(`🛡️ Defend: ${nick} en ${timing}ms`, 'defend');
+              }
+              
+              prueba = id;
+              testt.push({clan, nick, id});
+              updateStats();
+            }
+          }
+          
+          if(config.diabloV2Enabled && messageTimestamp && prueba) {
+            timeouts.push(setTimeout(() => {
+              if(prueba) aprisionar(prueba, verificador(testt, prueba), "DEFEND", allData);
+            }, delay));
+          } else if(prueba) {
+            timeouts.push(setTimeout(() => {
+              if(prueba) aprisionar(prueba, verificador(testt, prueba), "DEFEND", allData);
+            }, timing));
+          }
+        }
+      }
+      
+      // ============================================
+      // MODO LOWSEC - ATTACK (353)
+      // ============================================
+      if (config.mode === 'lowsec') {
+        if (snippets[0] === "353") {
+          let dump = event.data.replace(/353|-3|-2|@|:|\+/g, "");
+          let find = dump.toLowerCase().split(" ");
+          let timing = parseInt(config.attackDelay);
+          let messageTimestamp = event.timeStamp;
+          let currentTime = performance.now();
+          let delay = Math.max(0, timing - (currentTime - messageTimestamp));
+          
+          for (let i = 0; i < find.length; i++) {
+            let clan = find[i - 2], nick = find[i - 1], id = find[i];
+            
+            if (id.length >= 7 && /^\d+$/.test(id) && 
+                !whitelistNicks.includes(nick) && nick !== username.toLowerCase() && !verificador(test, id)) {
+              
+              // Modo Diablo V2: usa el delay calculado desde timestamp
+              if (config.diabloV2Enabled) {
+                timing = delay;
+                addLog(`⚡ Diablo V2: ${nick} en ${delay}ms`, 'attack');
+              } else {
+                addLog(`⚔️ Attack: ${nick} en ${timing}ms`, 'attack');
+              }
+              
+              test.push({clan, nick, id});
+              updateStats();
+            }
+          }
+          
+          if(test.length !== 0) {
+            if(config.randomTarget) userid = test[Math.floor(Math.random() * test.length)].id;
+            else if(config.reverseTarget) userid = test[test.length - 1].id;
+            else userid = test[0].id;
+            
+            if(config.diabloV2Enabled && messageTimestamp) {
+              timeouts.push(setTimeout(() => {
+                if (userid && test.length !== 0) aprisionar(userid, true, "ATTACK", allData);
+              }, delay));
+            } else {
+              timeouts.push(setTimeout(() => {
+                if (userid && test.length !== 0) aprisionar(userid, true, "ATTACK", allData);
+              }, timing));
+            }
+          }
+        }
+        
+        // MODO LOWSEC - DEFEND (JOIN)
+        if (snippets[0] === "JOIN" && snippets[3] != userId) {
+          let timing = parseInt(config.defendDelay);
+          let messageTimestamp = event.timeStamp;
+          let currentTime = performance.now();
+          let delay = Math.max(0, timing - (currentTime - messageTimestamp));
+          let snipfinal = event.data.toLowerCase().split(" ");
+          let prueba;
+          
+          for (let i = 0; i < snipfinal.length; i++) {
+            let clan = snipfinal[i - 2], nick = snipfinal[i - 1], id = snipfinal[i];
+            
+            if (id.length >= 7 && /^\d+$/.test(id) && 
+                !whitelistNicks.includes(nick) && !verificador(testt, id)) {
+              
+              // Modo Diablo V2: usa el delay calculado desde timestamp
+              if (config.diabloV2Enabled) {
+                timing = delay;
+                addLog(`⚡ Diablo V2: ${nick} en ${delay}ms`, 'defend');
+              } else {
+                addLog(`🛡️ Defend: ${nick} en ${timing}ms`, 'defend');
+              }
+              
+              prueba = id;
+              testt.push({clan, nick, id});
+              updateStats();
+            }
+          }
+          
+          if(config.diabloV2Enabled && messageTimestamp && prueba) {
+            timeouts.push(setTimeout(() => {
+              if(prueba) aprisionar(prueba, verificador(testt, prueba), "DEFEND", allData);
+            }, delay));
+          } else if(prueba) {
+            timeouts.push(setTimeout(() => {
+              if(prueba) aprisionar(prueba, verificador(testt, prueba), "DEFEND", allData);
+            }, timing));
+          }
+        }
+      }// ============================================
+      // MANEJO DE USUARIOS QUE SE VAN (PART/SLEEP)
+      // ============================================
+      if ((snippets[0] === "PART" || snippets[0] === "SLEEP") && snippets[1]) {
+        let departedId = parseInt(snippets[1]);
+        let wasCurrentTarget = currentSelectedTarget === departedId;
+        
+        if (wasCurrentTarget) {
+          currentSelectedTarget = null;
+          currentSelectedType = null;
+        }
+
+        // Remover de lista de defensa
+        for (let i = 0; i < testt.length; i++) {
+          if (parseInt(testt[i].id) === departedId) {
+            testt = testt.filter(item => parseInt(item.id) !== departedId);
+            break;
+          }
+        }
+
+        // Remover de lista de ataque
+        for (let i = 0; i < test.length; i++) {
+          if (parseInt(test[i].id) === departedId) {
+            test = test.filter(item => parseInt(item.id) !== departedId);
+            break;
+          }
+        }
+
+        // Remover de allData
+        for (let i = 0; i < allData.length; i++) {
+          if (parseInt(allData[i].id) === departedId) {
+            allData = allData.filter(item => parseInt(item.id) !== departedId);
+            break;
+          }
+        }
+
+        updateStats();
+
+        // Reseleccionar siguiente objetivo si era el target actual
+        if (wasCurrentTarget) {
+          let newTargetId = null;
+          let newTargetType = null;
+
+          if (test.length > 0) {
+            if (config.randomTarget) {
+              userid = test[Math.floor(Math.random() * test.length)].id;
+            } else if (config.reverseTarget) {
+              userid = test[test.length - 1].id;
+            } else {
+              userid = test[0].id;
+            }
+            newTargetId = userid;
+            newTargetType = 'attack';
+          } else if (testt.length > 0) {
+            newTargetId = testt[0].id;
+            newTargetType = 'defend';
+          }
+
+          if (newTargetId && config.autoSelectEnabled) {
+            addLog(`🔄 Reseleccionando: ${GetNick(allData, newTargetId)}`, 'select');
+            selectTargetInUI(newTargetId, newTargetType);
+          }
+        }
+      }
+      
+      // ============================================
+      // DETECCIÓN DE PRISIÓN
+      // ============================================
+      if(event.data.includes("PRISON")) {
+        addLog('🔴 PRISON detectado', 'error');
+        fullReset();
+      }
+      
+      // ============================================
+      // FLASH ROJO CUANDO KICKEAS
+      // ============================================
+      function flashGalaxyBotRed() {
+        const botUI = document.getElementById("galaxy-bot-ui");
+        if (botUI) {
+          botUI.classList.add("red-flash");
+          setTimeout(() => {
+            botUI.classList.remove("red-flash");
+          }, 1000);
+        }
+      }
+
+      // ============================================
+      // MANEJO DE KICK
+      // ============================================
+      if (snippets[1] === "KICK") {
+        let kickedId = parseInt(snippets[2]);
+
+        // Si TÚ kickeaste a alguien
+        if (snippets[0] === ":"+username) {
+          addLog(`✅ Kickeaste a ${GetNick(allData, kickedId.toString())}`, 'success');
+          flashGalaxyBotRed();
+          currentSelectedTarget = null;
+          currentSelectedType = null;
+          updateStats();
+        } else {
+          // Alguien más kickeó
+          // Remover de listas
+          for (let i = 0; i < test.length; i++) {
+            if (parseInt(test[i].id) === kickedId) {
+              test = test.filter(item => parseInt(item.id) !== kickedId);
+              break;
+            }
+          }
+
+          for (let i = 0; i < testt.length; i++) {
+            if (parseInt(testt[i].id) === kickedId) {
+              testt = testt.filter(item => parseInt(item.id) !== kickedId);
+              break;
+            }
+          }
+
+          allData = allData.filter(item => parseInt(item.id) !== kickedId);
+          updateStats();
+
+          // Si era tu target actual, reseleccionar
+          if (currentSelectedTarget === kickedId) {
+            currentSelectedTarget = null;
+            currentSelectedType = null;
+
+            let newTargetId = null;
+            let newTargetType = null;
+
+            if (test.length > 0) {
+              if (config.randomTarget) {
+                userid = test[Math.floor(Math.random() * test.length)].id;
+              } else if (config.reverseTarget) {
+                userid = test[test.length - 1].id;
+              } else {
+                userid = test[0].id;
+              }
+              newTargetType = 'attack';
+              newTargetId = userid;
+            } else if (testt.length > 0) {
+              newTargetId = testt[0].id;
+              newTargetType = 'defend';
+            }
+
+            if (newTargetId && config.autoSelectEnabled) {
+              addLog(`🔄 Reseleccionando: ${GetNick(allData, newTargetId)}`, 'select');
+              selectTargetInUI(newTargetId, newTargetType);
+            }
+          }
+        }
+      }
+
+      // ============================================
+      // ERROR 850 - DETECCIÓN DE REGLA 3s/15s
+      // ============================================
+      // ============================================
+// ERROR 850 - DETECCIÓN MEJORADA DE REGLA 3s/15s
+// ============================================
+if (snippets[0] === "850") {
+  const errorMessage = event.data.toLowerCase();
+  
+  // Patrones de detección más amplios
+  const patterns = [
+    /3\s*s/i,           // 3s, 3 s
+    /15\s*s/i,          // 15s, 15 s
+    /3\s*seg/i,         // 3 seg, 3seg
+    /15\s*seg/i,        // 15 seg, 15seg
+    /3\s*sec/i,         // 3 sec, 3sec, 3 second
+    /15\s*sec/i,        // 15 sec, 15sec, 15 second
+    /3\s*с/i,           // 3 с (ruso)
+    /15\s*секунд/i,     // 15 секунд (ruso)
+    /segundo\(s\)/i,    // segundo(s)
+    /\b3\b.*second/i,   // 3 second, 3 seconds
+    /\b15\b.*second/i   // 15 second, 15 seconds
+  ];
+  
+  // Verificar si algún patrón coincide
+  const isTimingError = patterns.some(pattern => pattern.test(errorMessage));
+  
+  if (isTimingError) {
+    data = true; // Activar incremento de delays
+    addLog('⚠️ Regla 3s/15s violada - Ajustando...', 'error');
+    // Aplicar límites después del ajuste automático
+      applyLimits();
+  } else {
+    // Mensaje 850 pero no es error de timing
+    data = false; // Desactivar incremento
+  }
+}
+      
+      // ============================================
+      // TE KICKEAN A TI
+      // ============================================
+      if(event.data.includes("KICK") && event.data.includes(userId)){
+        addLog('❌ Fuiste kickeado', 'error');
+        reconnect();
+      }
+      
+      // ============================================
+      // PING/PONG
+      // ============================================
+      if (snippets[0] === "PING\r\n") {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send("PONG\r\n");
+        }
+      }
+    });
+
+    return ws;
+  };
+
+  // ============================================
+  // WALLHACK - DIBUJO EN CANVAS
+  // ============================================
+  const drawWallhack = () => {
+    if (!config.wallhackEnabled) {
+      const canvas = document.getElementById('galaxy-wallhack-canvas');
+      if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+      return;
+    }
+    
+    let canvas = document.getElementById('galaxy-wallhack-canvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.id = 'galaxy-wallhack-canvas';
+      canvas.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:999998;';
+      document.body.appendChild(canvas);
+    }
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    if (myPosition === null) return;
+    
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const isMobile = canvas.width < 768;
+    const baseDistance = isMobile ? 100 : 150;
+    const arrowSize = isMobile ? 16 : 22;
+    const textOffsetX = isMobile ? 120 : 180;
+    const fontSize = isMobile ? 12 : 14;
+    const fontSizeSelected = isMobile ? 14 : 17;
+    const lineSpacing = isMobile ? 28 : 35;
+    const dotSize = isMobile ? 14 : 18;
+    
+    const allEnemies = [];
+    
+    test.forEach(e => {
+      const enemyData = allData.find(u => u.id === e.id);
+      if (enemyData && enemyData.posicion) {
+        allEnemies.push({...e, type: 'attack', position: parseInt(enemyData.posicion)});
+      }
+    });
+    
+    testt.forEach(e => {
+      if (!allEnemies.find(ae => ae.id === e.id)) {
+        const enemyData = allData.find(u => u.id === e.id);
+        if (enemyData && enemyData.posicion) {
+          allEnemies.push({...e, type: 'defend', position: parseInt(enemyData.posicion)});
+        }
+      }
+    });
+    
+    if (allEnemies.length === 0) {
+      ctx.shadowBlur = 30;
+      ctx.shadowColor = '#fbbf24';
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, dotSize + 12, 0, Math.PI * 2);
+      ctx.stroke();
+      
+      ctx.fillStyle = '#fbbf24';
+      ctx.shadowBlur = 25;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, dotSize, 0, Math.PI * 2);
+      ctx.fill();
+      
+      const crossSize = 30;
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 3;
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      ctx.moveTo(centerX - crossSize, centerY);
+      ctx.lineTo(centerX + crossSize, centerY);
+      ctx.moveTo(centerX, centerY - crossSize);
+      ctx.lineTo(centerX, centerY + crossSize);
+      ctx.stroke();
+      
+      ctx.font = isMobile ? 'bold 14px monospace' : 'bold 18px monospace';
+      ctx.fillStyle = '#fbbf24';
+      ctx.shadowBlur = 12;
+      const myText = `YOU [${myPosition}]`;
+      const myTextWidth = ctx.measureText(myText).width;
+      ctx.fillText(myText, centerX - myTextWidth/2, centerY - 50);
+      return;
+    }
+    
+    const rightEnemies = [];
+    const leftEnemies = [];
+    
+    allEnemies.forEach(enemy => {
+      const enemyPos = enemy.position;
+      const isRight = enemyPos > myPosition;
+      const distance = Math.abs(enemyPos - myPosition);
+      
+      const enemyInfo = {...enemy, distance, isSelected: currentSelectedTarget === enemy.id};
+      
+      if (isRight) rightEnemies.push(enemyInfo);
+      else leftEnemies.push(enemyInfo);
+    });
+    
+    rightEnemies.sort((a, b) => a.distance - b.distance);
+    leftEnemies.sort((a, b) => a.distance - b.distance);
+    rightEnemies.forEach((enemy, index) => {
+      const isAttack = enemy.type === 'attack';
+      const baseColor = isAttack ? '#22c55e' : '#10b981';
+      const glowColor = isAttack ? '#4ade80' : '#34d399';
+      const lineWidth = enemy.isSelected ? 8 : 6;
+      const glowIntensity = enemy.isSelected ? 35 : 22;
+      
+      const gradient = ctx.createLinearGradient(centerX, centerY, centerX + baseDistance + 50, centerY);
+      gradient.addColorStop(0, baseColor + '60');
+      gradient.addColorStop(1, baseColor);
+      
+      ctx.strokeStyle = gradient;
+      ctx.lineWidth = lineWidth;
+      ctx.shadowColor = glowColor;
+      ctx.shadowBlur = glowIntensity;
+      ctx.beginPath();
+      ctx.moveTo(centerX + 30, centerY);
+      ctx.lineTo(centerX + baseDistance, centerY);
+      ctx.stroke();
+      
+      ctx.fillStyle = baseColor;
+      ctx.shadowBlur = glowIntensity;
+      ctx.beginPath();
+      ctx.moveTo(centerX + baseDistance, centerY);
+      ctx.lineTo(centerX + baseDistance - 20, centerY - arrowSize);
+      ctx.lineTo(centerX + baseDistance - 20, centerY + arrowSize);
+      ctx.closePath();
+      ctx.fill();
+      
+      const totalRight = rightEnemies.length;
+      const yPos = centerY + (index * lineSpacing) - (totalRight * lineSpacing / 2) + lineSpacing/2;
+      
+      ctx.font = enemy.isSelected ? `bold ${fontSizeSelected}px monospace` : `${fontSize}px monospace`;
+      
+      const emoji = isAttack ? '⚔️' : '🛡️';
+      const displayText = isMobile ? `[${enemy.distance}] ${enemy.nick.substring(0, 10)}` : `${emoji} ${enemy.nick} [${enemy.distance}]`;
+      
+      const textWidth = ctx.measureText(displayText).width;
+      const textX = centerX + baseDistance + textOffsetX - 50;
+      
+      if (enemy.isSelected) {
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = baseColor + '50';
+        ctx.fillRect(textX - 12, yPos - fontSize - 6, textWidth + 24, fontSize + 14);
+      }
+      
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = glowColor;
+      ctx.fillStyle = baseColor;
+      ctx.fillText(displayText, textX, yPos);
+    });
+    
+    leftEnemies.forEach((enemy, index) => {
+      const isAttack = enemy.type === 'attack';
+      const baseColor = isAttack ? '#ef4444' : '#f97316';
+      const glowColor = isAttack ? '#f87171' : '#fb923c';
+      const lineWidth = enemy.isSelected ? 8 : 6;
+      const glowIntensity = enemy.isSelected ? 35 : 22;
+      
+      const gradient = ctx.createLinearGradient(centerX, centerY, centerX - baseDistance - 50, centerY);
+      gradient.addColorStop(0, baseColor + '60');
+      gradient.addColorStop(1, baseColor);
+      
+      ctx.strokeStyle = gradient;
+      ctx.lineWidth = lineWidth;
+      ctx.shadowColor = glowColor;
+      ctx.shadowBlur = glowIntensity;
+      ctx.beginPath();
+      ctx.moveTo(centerX - 30, centerY);
+      ctx.lineTo(centerX - baseDistance, centerY);
+      ctx.stroke();
+      
+      ctx.fillStyle = baseColor;
+      ctx.shadowBlur = glowIntensity;
+      ctx.beginPath();
+      ctx.moveTo(centerX - baseDistance, centerY);
+      ctx.lineTo(centerX - baseDistance + 20, centerY - arrowSize);
+      ctx.lineTo(centerX - baseDistance + 20, centerY + arrowSize);
+      ctx.closePath();
+      ctx.fill();
+      
+      const totalLeft = leftEnemies.length;
+      const yPos = centerY + (index * lineSpacing) - (totalLeft * lineSpacing / 2) + lineSpacing/2;
+      
+      ctx.font = enemy.isSelected ? `bold ${fontSizeSelected}px monospace` : `${fontSize}px monospace`;
+      
+      const emoji = isAttack ? '⚔️' : '🛡️';
+      const displayText = isMobile ? `${enemy.nick.substring(0, 10)} [${enemy.distance}]` : `[${enemy.distance}] ${enemy.nick} ${emoji}`;
+      
+      const textWidth = ctx.measureText(displayText).width;
+      const textX = centerX - baseDistance - textOffsetX - textWidth + 50;
+      
+      if (enemy.isSelected) {
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = baseColor + '50';
+        ctx.fillRect(textX - 12, yPos - fontSize - 6, textWidth + 24, fontSize + 14);
+      }
+      
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = glowColor;
+      ctx.fillStyle = baseColor;
+      ctx.fillText(displayText, textX, yPos);
+    });
+    
+    // Dibujar TU posición (centro)
+    ctx.shadowBlur = 30;
+    ctx.shadowColor = '#fbbf24';
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, dotSize + 14, 0, Math.PI * 2);
+    ctx.stroke();
+    
+    ctx.fillStyle = '#fbbf24';
+    ctx.shadowBlur = 25;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, dotSize, 0, Math.PI * 2);
+    ctx.fill();
+    
+    const crossSize = 35;
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 4;
+    ctx.shadowBlur = 15;
+    ctx.beginPath();
+    ctx.moveTo(centerX - crossSize, centerY);
+    ctx.lineTo(centerX + crossSize, centerY);
+    ctx.moveTo(centerX, centerY - crossSize);
+    ctx.lineTo(centerX, centerY + crossSize);
+    ctx.stroke();
+    
+    ctx.font = isMobile ? 'bold 14px monospace' : 'bold 18px monospace';
+    ctx.fillStyle = '#fbbf24';
+    ctx.shadowBlur = 12;
+    const myText = `YOU [${myPosition}]`;
+    const myTextWidth = ctx.measureText(myText).width;
+    ctx.fillText(myText, centerX - myTextWidth/2, centerY - 50);
+    
+    // Contador de enemigos
+    const totalEnemies = allEnemies.length;
+    if (totalEnemies > 0) {
+      ctx.font = isMobile ? 'bold 15px monospace' : 'bold 19px monospace';
+      ctx.fillStyle = '#fff';
+      ctx.shadowColor = '#000';
+      ctx.shadowBlur = 0;
+      
+      const counterText = `👥 ${totalEnemies} Enemigo${totalEnemies > 1 ? 's' : ''}`;
+      const counterWidth = ctx.measureText(counterText).width;
+      
+      ctx.fillStyle = 'rgba(0,0,0,0.85)';
+      ctx.fillRect(centerX - counterWidth/2 - 15, isMobile ? 20 : 30, counterWidth + 30, isMobile ? 32 : 38);
+      
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = 'rgba(0,0,0,0.5)';
+      ctx.fillStyle = '#fff';
+      ctx.fillText(counterText, centerX - counterWidth/2, isMobile ? 40 : 52);
+      
+      const attackCount = allEnemies.filter(e => e.type === 'attack').length;
+      const defendCount = allEnemies.filter(e => e.type === 'defend').length;
+      
+      ctx.font = isMobile ? '12px monospace' : '14px monospace';
+      ctx.shadowBlur = 0;
+      const statsText = `⚔️ ${attackCount}  🛡️ ${defendCount}`;
+      const statsWidth = ctx.measureText(statsText).width;
+      ctx.fillText(statsText, centerX - statsWidth/2, isMobile ? 62 : 76);
+    }
+  };
+
+  // Iniciar loop de wallhack
+  setInterval(() => drawWallhack(), 50);
+
+  // ============================================
+  // CREAR INTERFAZ DE USUARIO
+  // ============================================
+  const createUI = () => {
+    const existing = document.getElementById('galaxy-bot-ui');
+    if (existing) existing.remove();
+
+    const ui = document.createElement('div');
+    ui.id = 'galaxy-bot-ui';
+    ui.innerHTML = `
+      <style>
+        #galaxy-bot-ui {
+          position: fixed;
+          top: 10px;
+          right: 10px;
+          width: 320px;
+          max-width: calc(100vw - 20px);
+          background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+          border: 2px solid #7c3aed;
+          border-radius: 16px;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+          font-family: system-ui, -apple-system, sans-serif;
+          color: #fff;
+          z-index: 999999;
+          transition: all 0.3s ease;
+        }
+        
+        #galaxy-bot-ui.red-flash {
+          background: linear-gradient(135deg, #ff0000 0%, #aa0000 100%) !important;
+          border-color: #ff0000 !important;
+          color: #fff !important;
+        }
+        
+        #galaxy-bot-ui.minimized {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          overflow: hidden;
+        }
+        
+        #galaxy-bot-ui.minimized #galaxy-bot-header {
+          border-radius: 50%;
+          padding: 0;
+          width: 60px;
+          height: 60px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        #galaxy-bot-ui.minimized #galaxy-bot-header h3 {
+          display: none;
+        }
+        
+        #galaxy-bot-ui.minimized #galaxy-bot-minimize {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 40px;
+          height: 40px;
+          font-size: 24px;
+          background: rgba(124, 58, 237, 0.8);
+        }
+        
+        #galaxy-bot-ui.minimized #galaxy-bot-content {
+          display: none !important;
+        }
+        
+        #galaxy-bot-header {
+          background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+          padding: 10px 12px;
+          border-radius: 14px 14px 0 0;
+          cursor: move;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          user-select: none;
+        }
+        
+        #galaxy-bot-header h3 {
+          margin: 0;
+          font-size: 13px;
+          font-weight: 600;
+        }
+        
+        #galaxy-bot-minimize {
+          background: rgba(255,255,255,0.2);
+          border: none;
+          color: white;
+          width: 28px;
+          height: 28px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 18px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s;
+        }
+        
+        #galaxy-bot-minimize:hover {
+          background: rgba(255,255,255,0.3);
+        }
+        
+        #galaxy-bot-content {
+          padding: 12px;
+          max-height: calc(100vh - 100px);
+          overflow-y: auto;
+        }
+        
+        .bot-controls {
+          display: flex;
+          gap: 8px;
+          margin-bottom: 12px;
+        }
+        
+        .bot-btn {
+          flex: 1;
+          padding: 8px;
+          border: none;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          font-size: 12px;
+          transition: all 0.2s;
+        }
+        
+        .bot-btn-reset {
+          background: #6b7280;
+          color: white;
+        }
+        
+        .bot-btn-reset:hover {
+          background: #4b5563;
+        }
+        
+        .bot-stats {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          gap: 8px;
+          margin-bottom: 12px;
+        }
+        
+        .bot-stat {
+          background: rgba(124, 58, 237, 0.2);
+          padding: 10px 8px;
+          border-radius: 8px;
+          text-align: center;
+          border: 1px solid rgba(124, 58, 237, 0.3);
+        }
+        
+        .bot-stat-value {
+          font-size: 20px;
+          font-weight: bold;
+        }
+        
+        .bot-stat-label {
+          font-size: 9px;
+          color: #cbd5e1;
+          margin-top: 2px;
+        }
+        
+        .bot-section {
+          background: #0f3460;
+          padding: 10px;
+          border-radius: 8px;
+          margin-bottom: 10px;
+        }
+        
+        .bot-section h4 {
+          margin: 0 0 8px 0;
+          font-size: 12px;
+          color: #a78bfa;
+        }
+        
+        .bot-input {
+          width: 100%;
+          padding: 6px 8px;
+          background: #16213e;
+          border: 1px solid #7c3aed;
+          border-radius: 6px;
+          color: #fff;
+          font-size: 11px;
+          margin-bottom: 6px;
+          box-sizing: border-box;
+        }
+        
+        .bot-input[type="password"] {
+          letter-spacing: 2px;
+        }
+        
+        .bot-textarea {
+          width: 100%;
+          padding: 6px 8px;
+          background: #16213e;
+          border: 1px solid #7c3aed;
+          border-radius: 6px;
+          color: #fff;
+          font-size: 10px;
+          font-family: monospace;
+          resize: vertical;
+          min-height: 60px;
+          box-sizing: border-box;
+        }
+        
+        .bot-checkbox-group {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        
+        .bot-checkbox-label {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 11px;
+          cursor: pointer;
+        }
+        
+        .bot-checkbox-label input {
+          width: 16px;
+          height: 16px;
+          cursor: pointer;
+          accent-color: #7c3aed;
+        }
+        
+        .bot-input-group {
+          display: flex;
+          gap: 6px;
+          align-items: center;
+        }
+        
+        .bot-input-small {
+          width: 60px;
+          padding: 4px 6px;
+          background: #16213e;
+          border: 1px solid #7c3aed;
+          border-radius: 6px;
+          color: #fff;
+          font-size: 11px;
+          text-align: center;
+          box-sizing: border-box;
+        }
+        
+        #galaxy-bot-logs {
+          background: #000;
+          padding: 8px;
+          border-radius: 6px;
+          height: 120px;
+          overflow-y: auto;
+          font-family: 'Courier New', monospace;
+          font-size: 12px;
+          border: 1px solid #7c3aed;
+        }
+        
+        .bot-logs-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 6px;
+        }
+        
+        .bot-clear-btn {
+          background: #374151;
+          color: #fff;
+          padding: 4px 8px;
+          font-size: 10px;
+          border-radius: 4px;
+          border: none;
+          cursor: pointer;
+        }
+        
+        .bot-label {
+          font-size: 10px;
+          color: #cbd5e1;
+          display: block;
+          margin-bottom: 3px;
+        }
+        
+        .bot-indicator {
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          margin-left: 6px;
+        }
+        
+        .bot-indicator.active {
+          background: #22c55e;
+          box-shadow: 0 0 8px #22c55e;
+        }
+        
+        .bot-indicator.inactive {
+          background: #6b7280;
+        }
+        
+        @media (max-width: 480px) {
+          #galaxy-bot-ui {
+            width: calc(100vw - 20px);
+            top: 10px;
+            right: 10px;
+            left: 10px;
+          }
+          
+          #galaxy-bot-ui.minimized {
+            width: 56px;
+            height: 56px;
+            left: auto;
+            right: 10px;
+          }
+          
+          #galaxy-bot-ui.minimized #galaxy-bot-header {
+            width: 56px;
+            height: 56px;
+          }
+          
+          #galaxy-bot-ui.minimized #galaxy-bot-minimize {
+            width: 36px;
+            height: 36px;
+            font-size: 20px;
+          }
+          
+          .bot-stats {
+            grid-template-columns: 1fr 1fr 1fr;
+          }
+          
+          .bot-stat-value {
+            font-size: 18px;
+          }
+          
+          .bot-stat-label {
+            font-size: 8px;
+          }
+        .bot-input-group {
+          display: flex;
+          gap: 6px;
+          align-items: center;
+          margin-bottom: 8px;
+        }
+        
+        .bot-input-group .bot-input-small {
+          flex: 1;
+        }
+        
+        .bot-limits-info {
+          background: rgba(124, 58, 237, 0.1);
+          border: 1px solid rgba(124, 58, 237, 0.3);
+          border-radius: 6px;
+          padding: 8px;
+          margin-top: 8px;
+          font-size: 10px;
+          color: #cbd5e1;
+          line-height: 1.4;
+        }
+        
+        .bot-limits-info strong {
+          color: #a78bfa;
+    
+        }
+      </style>
+      
+      <div id="galaxy-bot-header">
+        <h3>🛸 Ultron Prison 2.2</h3>
+        <button id="galaxy-bot-minimize">−</button>
+      </div>
+      
+      <div id="galaxy-bot-content">
+        <div class="bot-controls">
+          <button class="bot-btn bot-btn-reset" id="galaxy-bot-reset">🔄 Reset</button>
+        </div>
+        
+        <div class="bot-stats">
+          <div class="bot-stat">
+            <div class="bot-stat-value" id="galaxy-bot-attack-count">0</div>
+            <div class="bot-stat-label">⚔️ Attack</div>
+          </div>
+          <div class="bot-stat">
+            <div class="bot-stat-value" id="galaxy-bot-defend-count">0</div>
+            <div class="bot-stat-label">🛡️ Defend</div>
+          </div>
+          <div class="bot-stat">
+            <div class="bot-stat-value" id="galaxy-bot-users-count">0</div>
+            <div class="bot-stat-label">👥 Users</div>
+          </div>
+        </div>
+        
+        <div class="bot-section">
+          <h4>⚙️ Configuration</h4>
+          <label class="bot-label">Recovery Code</label>
+          <input type="password" class="bot-input" id="galaxy-bot-rc" placeholder="••••••••••" maxlength="10">
+          
+          <label class="bot-label">Attack Delay (ms)</label>
+          <input type="number" class="bot-input" id="galaxy-bot-attack-delay" value="1920">
+          
+          <label class="bot-label">Defend Delay (ms)</label>
+          <input type="number" class="bot-input" id="galaxy-bot-defend-delay" value="1910">
+          <label class="bot-label">Reconnect Delay (ms)</label>
+          <input type="number" class="bot-input" id="galaxy-bot-reconnect-delay" value="1000">
+          
+          <label class="bot-label">Device Type</label>
+          <select class="bot-input" id="galaxy-bot-device-type">
+            <option value="350">Android</option>
+            <option value="345">iOS</option>
+            <option value="352">Web (Sin IDENT)</option>
+          </select>
+          
+          <label class="bot-label">Mode</label>
+          <select class="bot-input" id="galaxy-bot-mode">
+            <option value="whitelist">Whitelist Only</option>
+            <option value="lowsec" selected>Low Sec (All)</option>
+          </select>
+          
+          <label class="bot-label">Automatic Adjust</label>
+          <div class="bot-input-group">
+            <span style="font-size: 10px; color: #cbd5e1;">+</span>
+            <input type="number" class="bot-input-small" id="galaxy-bot-increment" value="2" min="1" max="10">
+            <span style="font-size: 10px; color: #cbd5e1;">−</span>
+            <input type="number" class="bot-input-small" id="galaxy-bot-decrement" value="3" min="1" max="10">
+          </div>
+
+          <label class="bot-label">Límites Defend (Min/Max ms)</label>
+          <div class="bot-input-group">
+            <input type="number" class="bot-input-small" id="galaxy-bot-limit-defend-min" value="1900" placeholder="Min">
+            <span style="font-size: 10px; color: #cbd5e1;">/</span>
+            <input type="number" class="bot-input-small" id="galaxy-bot-limit-defend-max" value="2100" placeholder="Max">
+          </div>
+          
+          <label class="bot-label">Límites Attack (Min/Max ms)</label>
+          <div class="bot-input-group">
+            <input type="number" class="bot-input-small" id="galaxy-bot-limit-attack-min" value="1910" placeholder="Min">
+            <span style="font-size: 10px; color: #cbd5e1;">/</span>
+            <input type="number" class="bot-input-small" id="galaxy-bot-limit-attack-max" value="2100" placeholder="Max">
+          </div>
+          
+          <div class="bot-checkbox-group">
+            <label class="bot-checkbox-label">
+              <input type="checkbox" id="galaxy-bot-random" checked>
+              Random Target
+            </label>
+            <label class="bot-checkbox-label">
+              <input type="checkbox" id="galaxy-bot-reverse">
+              Reverse Target
+            </label>
+            <label class="bot-checkbox-label">
+              <input type="checkbox" id="galaxy-bot-diablo-v2" checked>
+              ⚡ Modo Diablo V2
+              <span class="bot-indicator" id="diablo-indicator"></span>
+            </label>
+            <label class="bot-checkbox-label">
+              <input type="checkbox" id="galaxy-bot-automatic" checked>
+              ⚡ Automatic
+              <span class="bot-indicator" id="automatic-indicator"></span>
+            </label>
+            <label class="bot-checkbox-label">
+              <input type="checkbox" id="galaxy-bot-wallhack" checked>
+              🎯 Wallhack
+            </label>
+            <label class="bot-checkbox-label">
+              <input type="checkbox" id="galaxy-bot-autoselect" checked>
+              🖱️ Auto-Select Target
+            </label>
+            <label class="bot-checkbox-label">
+              <input type="checkbox" id="galaxy-bot-autoreconnect" checked>
+              🔄 Auto-Reconnect
+            </label>
+          </div>
+        </div>
+        
+        <div class="bot-section">
+          <h4>👥 Filters</h4>
+          <label class="bot-label">Clan Whitelist</label>
+          <textarea class="bot-textarea" id="galaxy-bot-whitelist" placeholder="CLAN1
+CLAN2"></textarea>
+          
+          <label class="bot-label">Nick Whitelist</label>
+          <textarea class="bot-textarea" id="galaxy-bot-whitelist-nicks" placeholder="Player1
+Player2"></textarea>
+        </div>
+        
+        <div class="bot-section">
+          <div class="bot-logs-header">
+            <h4 style="margin: 0;">📊 Logs</h4>
+            <button class="bot-clear-btn" id="galaxy-bot-clear-logs">Clear</button>
+          </div>
+          <div id="galaxy-bot-logs"></div>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(ui);
+    // Cargar valores guardados en la UI
+    if (config.rc) document.getElementById('galaxy-bot-rc').value = config.rc;
+    document.getElementById('galaxy-bot-attack-delay').value = config.attackDelay;
+    document.getElementById('galaxy-bot-defend-delay').value = config.defendDelay;
+    document.getElementById('galaxy-bot-reconnect-delay').value = config.reconnectDelay;
+    document.getElementById('galaxy-bot-device-type').value = config.deviceType;
+    document.getElementById('galaxy-bot-mode').value = config.mode;
+    document.getElementById('galaxy-bot-increment').value = config.incrementValue;
+    document.getElementById('galaxy-bot-decrement').value = config.decrementValue;
+document.getElementById('galaxy-bot-limit-defend-min').value = config.limitDefendMin;
+document.getElementById('galaxy-bot-limit-defend-max').value = config.limitDefendMax;
+document.getElementById('galaxy-bot-limit-attack-min').value = config.limitAttackMin;
+document.getElementById('galaxy-bot-limit-attack-max').value = config.limitAttackMax;
+
+// Inicializar las variables globales de límites con los valores cargados
+limit = config.limitDefendMin;
+limit3 = config.limitDefendMax;
+limit2 = config.limitAttackMin;
+limit4 = config.limitAttackMax;
+attkbase = config.attackDelay;
+defbase = config.defendDelay;
+    document.getElementById('galaxy-bot-random').checked = config.randomTarget;
+    document.getElementById('galaxy-bot-reverse').checked = config.reverseTarget;
+    document.getElementById('galaxy-bot-diablo-v2').checked = config.diabloV2Enabled;
+    document.getElementById('galaxy-bot-automatic').checked = config.automaticEnabled;
+    document.getElementById('galaxy-bot-wallhack').checked = config.wallhackEnabled;
+    document.getElementById('galaxy-bot-autoselect').checked = config.autoSelectEnabled;
+    document.getElementById('galaxy-bot-autoreconnect').checked = config.autoReconnect;
+    
+    if (config.whitelist && config.whitelist.length > 0) {
+      document.getElementById('galaxy-bot-whitelist').value = config.whitelist.join('\n');
+      whitelist = config.whitelist;
+    }
+    
+    if (config.whitelistNicks && config.whitelistNicks.length > 0) {
+      document.getElementById('galaxy-bot-whitelist-nicks').value = config.whitelistNicks.join('\n');
+      whitelistNicks = config.whitelistNicks;
+    }
+
+    // Actualizar indicadores visuales
+    const updateIndicators = () => {
+      const diabloIndicator = document.getElementById('diablo-indicator');
+      const automaticIndicator = document.getElementById('automatic-indicator');
+      
+      if (diabloIndicator) {
+        diabloIndicator.className = 'bot-indicator ' + (config.diabloV2Enabled ? 'active' : 'inactive');
+      }
+      
+      if (automaticIndicator) {
+        automaticIndicator.className = 'bot-indicator ' + (config.automaticEnabled ? 'active' : 'inactive');
+      }
+    };
+    
+    updateIndicators();
+
+    // ============================================
+    // SISTEMA DE ARRASTRE (DRAG) MEJORADO
+    // ============================================
+    const header = document.getElementById('galaxy-bot-header');
+
+    let isDragging = false;
+    let targetX = 0, targetY = 0;
+    let currentX = 0, currentY = 0;
+    let offsetX = 0, offsetY = 0;
+
+    function startDrag(x, y) {
+      isDragging = true;
+      offsetX = x - targetX;
+      offsetY = y - targetY;
+    }
+
+    function doDrag(x, y) {
+      if (!isDragging) return;
+      targetX = x - offsetX;
+      targetY = y - offsetY;
+    }
+
+    function endDrag() {
+      isDragging = false;
+    }
+
+    // Animación continua con suavizado
+    function animate() {
+      currentX += (targetX - currentX) * 0.2;
+      currentY += (targetY - currentY) * 0.2;
+      ui.style.transform = `translate(${currentX}px, ${currentY}px)`;
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // PC (Mouse)
+    header.addEventListener('mousedown', (e) => startDrag(e.clientX, e.clientY));
+    document.addEventListener('mousemove', (e) => doDrag(e.clientX, e.clientY));
+    document.addEventListener('mouseup', endDrag);
+
+    // Mobile (Touch)
+    header.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      startDrag(touch.clientX, touch.clientY);
+    });
+    document.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      const touch = e.touches[0];
+      doDrag(touch.clientX, touch.clientY);
+    });
+    document.addEventListener('touchend', endDrag);
+
+    // ============================================
+    // BOTÓN MINIMIZAR
+    // ============================================
+    document.getElementById('galaxy-bot-minimize').addEventListener('click', () => {
+      ui.classList.toggle('minimized');
+      const btn = document.getElementById('galaxy-bot-minimize');
+      btn.textContent = ui.classList.contains('minimized') ? '🛸' : '−';
+    });
+
+    // ============================================
+    // BOTÓN RESET
+    // ============================================
+    document.getElementById('galaxy-bot-reset').addEventListener('click', () => {
+      reset();
+    });
+
+    // ============================================
+    // BOTÓN CLEAR LOGS
+    // ============================================
+    document.getElementById('galaxy-bot-clear-logs').addEventListener('click', () => {
+      document.getElementById('galaxy-bot-logs').innerHTML = '';
+      addLog('🧹 Logs limpiados', 'info');
+    });
+
+    // ============================================
+    // FUNCIÓN PARA ACTUALIZAR CONFIG
+const updateConfig = () => {
+  config.attackDelay = parseInt(document.getElementById('galaxy-bot-attack-delay').value) || 1920;
+  config.defendDelay = parseInt(document.getElementById('galaxy-bot-defend-delay').value) || 1910;
+  config.reconnectDelay = parseInt(document.getElementById('galaxy-bot-reconnect-delay').value) || 1000;
+  config.deviceType = document.getElementById('galaxy-bot-device-type').value;
+  config.mode = document.getElementById('galaxy-bot-mode').value;
+  config.incrementValue = parseInt(document.getElementById('galaxy-bot-increment').value) || 2;
+  config.decrementValue = parseInt(document.getElementById('galaxy-bot-decrement').value) || 3;
+  config.randomTarget = document.getElementById('galaxy-bot-random').checked;
+  config.reverseTarget = document.getElementById('galaxy-bot-reverse').checked;
+  config.diabloV2Enabled = document.getElementById('galaxy-bot-diablo-v2').checked;
+  config.automaticEnabled = document.getElementById('galaxy-bot-automatic').checked;
+  config.wallhackEnabled = document.getElementById('galaxy-bot-wallhack').checked;
+  config.autoSelectEnabled = document.getElementById('galaxy-bot-autoselect').checked;
+  config.autoReconnect = document.getElementById('galaxy-bot-autoreconnect').checked;
+  config.rc = document.getElementById('galaxy-bot-rc').value;
+  
+  // Actualizar límites
+  limit = parseInt(document.getElementById('galaxy-bot-limit-defend-min').value) || 1900;
+  limit3 = parseInt(document.getElementById('galaxy-bot-limit-defend-max').value) || 2100;
+  limit2 = parseInt(document.getElementById('galaxy-bot-limit-attack-min').value) || 1910;
+  limit4 = parseInt(document.getElementById('galaxy-bot-limit-attack-max').value) || 2100;
+  
+  config.limitDefendMin = limit;
+  config.limitDefendMax = limit3;
+  config.limitAttackMin = limit2;
+  config.limitAttackMax = limit4;
+  
+  // Actualizar valores base
+  attkbase = config.attackDelay;
+  defbase = config.defendDelay;
+  
+  // Aplicar límites a los delays actuales
+  applyLimits();
+  
+  whitelist = document.getElementById('galaxy-bot-whitelist').value
+    .toLowerCase()
+    .split('\n')
+    .map(s => s.trim())
+    .filter(Boolean);
+    
+  whitelistNicks = document.getElementById('galaxy-bot-whitelist-nicks').value
+    .toLowerCase()
+    .split('\n')
+    .map(s => s.trim())
+    .filter(Boolean);
+    
+  updateIndicators();
+  saveConfig();
+  addLog('⚙️ Config guardada', 'info');
+};
+
+    // ============================================
+    // AGREGAR LISTENERS A TODOS LOS INPUTS
+    // ============================================ray por este:
+
+const inputIds = [
+  'galaxy-bot-attack-delay',
+  'galaxy-bot-defend-delay',
+  'galaxy-bot-reconnect-delay',
+  'galaxy-bot-device-type',
+  'galaxy-bot-mode',
+  'galaxy-bot-increment',
+  'galaxy-bot-decrement',
+  'galaxy-bot-limit-defend-min',
+  'galaxy-bot-limit-defend-max',
+  'galaxy-bot-limit-attack-min',
+  'galaxy-bot-limit-attack-max',
+  'galaxy-bot-random',
+  'galaxy-bot-reverse',
+  'galaxy-bot-diablo-v2',
+  'galaxy-bot-automatic',
+  'galaxy-bot-wallhack',
+  'galaxy-bot-autoselect',
+  'galaxy-bot-autoreconnect',
+  'galaxy-bot-rc',
+  'galaxy-bot-whitelist',
+  'galaxy-bot-whitelist-nicks'
+];
+
+    inputIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', updateConfig);
+        el.addEventListener('change', updateConfig);
+      }
+    });
+
+    // ============================================
+    // LOGS INICIALES
+    // ============================================
+    addLog('✅ Bot cargado correctamente', 'success');
+    if (config.rc) addLog('🔑 RC guardado en memoria', 'info');
+    if (config.diabloV2Enabled) addLog('⚡ Modo Diablo V2 ACTIVO', 'success');
+    if (config.automaticEnabled) addLog('🔧 Automatic ACTIVO', 'success');
+    if (config.autoReconnect) addLog('🔄 Auto-Reconnect ACTIVO', 'success');
+    addLog('🔍 Esperando conexión...', 'info');
+  };
+
+  // ============================================
+  // INICIAR UI
+  // ============================================
+  createUI();
+  
+  // ============================================
+  // CONSOLE LOG
+  // ============================================
+  console.log('%c╔══════════════════════════════════════════╗', 'color: #7c3aed; font-weight: bold;');
+  console.log('%c║   🛸 ULTRON PRISON BOT V2.2 ENHANCED   ║', 'color: #a78bfa; font-weight: bold; font-size: 16px;');
+  console.log('%c║         By D4NG3R - 2025               ║', 'color: #7c3aed; font-weight: bold;');
+  console.log('%c╚══════════════════════════════════════════╝', 'color: #7c3aed; font-weight: bold;');
+  console.log('%c[✓] Bot cargado correctamente', 'color: #22c55e; font-weight: bold;');
+  
+})();
